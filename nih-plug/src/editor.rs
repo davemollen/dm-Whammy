@@ -3,7 +3,7 @@ mod param_knob;
 use nih_plug::params::Param;
 use param_knob::{ParamKnob, ParamKnobSize};
 mod ui_data;
-use crate::rat_parameters::RatParameters;
+use crate::shredmaster_parameters::ShredmasterParameters;
 use nih_plug::prelude::Editor;
 use nih_plug_vizia::vizia::{
   model::Model,
@@ -20,11 +20,11 @@ const STYLE: &str = include_str!("./editor/style.css");
 
 // Makes sense to also define this here, makes it a bit easier to keep track of
 pub(crate) fn default_state() -> Arc<ViziaState> {
-  ViziaState::new(|| (280, 200))
+  ViziaState::new(|| (360, 200))
 }
 
 pub(crate) fn create(
-  params: Arc<RatParameters>,
+  params: Arc<ShredmasterParameters>,
   editor_state: Arc<ViziaState>,
 ) -> Option<Box<dyn Editor>> {
   create_vizia_editor(
@@ -43,20 +43,40 @@ pub(crate) fn create(
         HStack::new(cx, |cx| {
           ParamKnob::new(
             cx,
-            params.distortion.name(),
+            params.gain.name(),
             UiData::params,
-            params.distortion.as_ptr(),
-            |params| &params.distortion,
+            params.gain.as_ptr(),
+            |params| &params.gain,
             |param_ptr, val| ParamChangeEvent::SetParam(param_ptr, val),
             ParamKnobSize::Regular,
           );
 
           ParamKnob::new(
             cx,
-            params.filter.name(),
+            params.bass.name(),
             UiData::params,
-            params.filter.as_ptr(),
-            |params| &params.filter,
+            params.bass.as_ptr(),
+            |params| &params.bass,
+            |param_ptr, val| ParamChangeEvent::SetParam(param_ptr, val),
+            ParamKnobSize::Regular,
+          );
+
+          ParamKnob::new(
+            cx,
+            params.contour.name(),
+            UiData::params,
+            params.contour.as_ptr(),
+            |params| &params.contour,
+            |param_ptr, val| ParamChangeEvent::SetParam(param_ptr, val),
+            ParamKnobSize::Regular,
+          );
+
+          ParamKnob::new(
+            cx,
+            params.treble.name(),
+            UiData::params,
+            params.treble.as_ptr(),
+            |params| &params.treble,
             |param_ptr, val| ParamChangeEvent::SetParam(param_ptr, val),
             ParamKnobSize::Regular,
           );
@@ -71,19 +91,17 @@ pub(crate) fn create(
             ParamKnobSize::Regular,
           );
         })
-        .child_space(Stretch(1.0))
-        .col_between(Pixels(8.0));
+        .child_space(Stretch(1.0));
 
-        Label::new(cx, "RAT")
+        Label::new(cx, "ShredMaster")
           .font_size(32.0)
           .font_weight(FontWeightKeyword::ExtraBold)
-          .color("#eceaee")
-          .background_color("#100f14")
-          .border_color("#eceaee")
+          .color("#C9C06A")
+          .border_color("#C9C06A")
           .border_width(Pixels(1.0))
           .child_space(Stretch(1.0))
-          .width(Pixels(66.0))
-          .height(Pixels(32.0))
+          .width(Pixels(200.0))
+          .height(Pixels(36.0))
           .top(Pixels(32.0))
           .bottom(Pixels(32.0))
           .left(Stretch(1.0))

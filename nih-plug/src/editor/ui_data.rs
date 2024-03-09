@@ -1,4 +1,4 @@
-use crate::rat_parameters::RatParameters;
+use crate::shredmaster_parameters::ShredmasterParameters;
 use nih_plug::{params::internals::ParamPtr, prelude::GuiContext};
 use nih_plug_vizia::vizia::prelude::*;
 use std::sync::Arc;
@@ -8,7 +8,7 @@ pub enum ParamChangeEvent {
 
 #[derive(Lens)]
 pub struct UiData {
-  pub params: Arc<RatParameters>,
+  pub params: Arc<ShredmasterParameters>,
   pub gui_context: Arc<dyn GuiContext>,
 }
 
