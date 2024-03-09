@@ -36,8 +36,8 @@ impl ToneStack {
     let c2c3 = c2 * c3;
     let c1c2c3 = c1c2 * c3;
 
-    let r1_a = (1. - treble) * r1;
-    let r1_b = treble * r1;
+    let r1_a = treble * r1;
+    let r1_b = (1. - treble) * r1;
 
     let b0 = c1c2c3 * r2 * r3 * r4
       + r1_a * c1c2c3 * r2 * r4
