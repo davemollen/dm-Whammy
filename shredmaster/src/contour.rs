@@ -26,8 +26,8 @@ impl Contour {
     let r2 = 33000.;
     let r3 = 33000.;
     let r4 = 100000.;
-    let r4_a = contour * r4;
-    let r4_b = (1. - contour) * r4;
+    let r4_a = (1. - contour) * r4;
+    let r4_b = contour * r4;
     let c1 = 1e-9;
     let c2 = 1e-7;
     let c3 = 4.7e-8;

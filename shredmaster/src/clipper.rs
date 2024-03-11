@@ -14,6 +14,7 @@ impl Clipper {
   }
 
   pub fn process(&mut self, input: f32) -> f32 {
+    // TODO: change output level
     self.oversample.process(input, |x| {
       let x2 = x * x;
       let x3 = x2 * x;
