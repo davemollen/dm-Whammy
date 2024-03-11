@@ -29,7 +29,6 @@ impl OpAmp1 {
     let a0 = z2_a * z2_b;
     let a1 = z2_a + z2_b;
 
-    // TODO: check if normalizing is needed, because it will be normalized at a later stage too
     (-b1 / a0, [1., a1 / a0, 1. / a0])
   }
 }

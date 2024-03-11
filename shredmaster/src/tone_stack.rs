@@ -1,7 +1,6 @@
-mod bilinear_transform;
-use bilinear_transform::BilinearTransform;
-mod third_order_iir_filter;
-use third_order_iir_filter::ThirdOrderIIRFilter;
+use crate::shared::{
+  bilinear_transform::BilinearTransform, third_order_iir_filter::ThirdOrderIIRFilter,
+};
 
 pub struct ToneStack {
   filter: ThirdOrderIIRFilter,

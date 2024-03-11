@@ -5,6 +5,8 @@ mod op_amp2;
 use op_amp2::OpAmp2;
 mod op_amp3;
 use op_amp3::OpAmp3;
+mod op_amp4;
+use op_amp4::OpAmp4;
 mod tone_stack;
 use tone_stack::ToneStack;
 mod clipper;
@@ -14,7 +16,9 @@ use contour::Contour;
 mod smooth_parameters;
 use smooth_parameters::SmoothParameters;
 pub mod shared {
+  pub mod bilinear_transform;
   pub mod op_amp;
+  pub mod third_order_iir_filter;
 }
 
 pub struct Shredmaster {
@@ -24,6 +28,7 @@ pub struct Shredmaster {
   tone_stack: ToneStack,
   op_amp3: OpAmp3,
   contour: Contour,
+  op_amp4: OpAmp4,
   smooth_parameters: SmoothParameters<5>,
 }
 
@@ -36,6 +41,7 @@ impl Shredmaster {
       tone_stack: ToneStack::new(sample_rate),
       op_amp3: OpAmp3::new(sample_rate),
       contour: Contour::new(sample_rate),
+      op_amp4: OpAmp4::new(sample_rate),
       smooth_parameters: SmoothParameters::new(sample_rate),
     }
   }
@@ -60,6 +66,7 @@ impl Shredmaster {
     let tone_stack_output = self.tone_stack.process(clipper_output, bass, treble);
     let op_amp3_output = self.op_amp3.process(tone_stack_output);
     let contour_output = self.contour.process(op_amp3_output, contour);
-    contour_output * volume
+    let op_amp4_output = self.op_amp4.process(contour_output);
+    op_amp4_output * volume
   }
 }
