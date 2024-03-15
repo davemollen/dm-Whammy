@@ -49,7 +49,7 @@ impl Default for ShredmasterParameters {
         .with_value_to_string(v2s_f32_percentage(2))
         .with_string_to_value(s2v_f32_percentage()),
 
-      contour: FloatParam::new("Contour", 0.5, FloatRange::Linear { min: 0., max: 1. })
+      contour: FloatParam::new("Contour", 0., FloatRange::Linear { min: 0., max: 1. })
         .with_unit(" %")
         .with_value_to_string(v2s_f32_percentage(2))
         .with_string_to_value(s2v_f32_percentage()),

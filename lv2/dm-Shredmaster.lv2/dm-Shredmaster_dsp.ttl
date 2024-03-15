@@ -41,7 +41,7 @@ A distortion effect written in Rust.
 		lv2:index 2 ;
 		lv2:symbol "contour" ;
 		lv2:name "Contour" ;
-		lv2:default 0.5 ;
+		lv2:default 0.0 ;
 		lv2:minimum 0.0 ;
 		lv2:maximum 1.0 ;
 	], [
@@ -66,7 +66,7 @@ A distortion effect written in Rust.
 		lv2:symbol "brilliance" ;
 		lv2:name "Brilliance" ;
 		lv2:portProperty lv2:integer, lv2:toggled;
-		lv2:default 1 ;
+		lv2:default 0 ;
 		lv2:minimum 0 ;
 		lv2:maximum 1 ;
 	], [
