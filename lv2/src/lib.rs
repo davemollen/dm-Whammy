@@ -10,6 +10,7 @@ struct Ports {
   treble: InputPort<Control>,
   contour: InputPort<Control>,
   volume: InputPort<Control>,
+  brilliance: InputPort<Control>,
   input: InputPort<Audio>,
   output: OutputPort<Audio>,
 }
@@ -42,11 +43,12 @@ impl Plugin for DmShredmaster {
     let contour = *ports.contour;
     let treble = *ports.treble;
     let volume = *ports.volume;
+    let brilliance = *ports.brilliance == 1;
 
     for (input, output) in ports.input.iter().zip(ports.output.iter_mut()) {
       *output = self
         .shredmaster
-        .process(*input, gain, bass, contour, treble, volume);
+        .process(*input, gain, bass, contour, treble, volume, brilliance);
     }
   }
 }

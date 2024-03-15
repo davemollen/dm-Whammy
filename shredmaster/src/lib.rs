@@ -54,6 +54,7 @@ impl Shredmaster {
     contour: f32,
     treble: f32,
     volume: f32,
+    brilliance: bool,
   ) -> f32 {
     let [gain, bass, contour, treble, volume] =
       self
@@ -66,7 +67,7 @@ impl Shredmaster {
     let tone_stack_output = self.tone_stack.process(clipper_output, bass, treble);
     let op_amp3_output = self.op_amp3.process(tone_stack_output);
     let contour_output = self.contour.process(op_amp3_output, contour);
-    let op_amp4_output = self.op_amp4.process(contour_output);
+    let op_amp4_output = self.op_amp4.process(contour_output, brilliance);
     op_amp4_output * volume
   }
 }

@@ -61,13 +61,22 @@ A distortion effect written in Rust.
 		lv2:minimum 0.0 ;
 		lv2:maximum 1.0 ;
 	], [
-		a lv2:AudioPort, lv2:InputPort ;
+		a lv2:InputPort, lv2:ControlPort ;
 		lv2:index 5 ;
+		lv2:symbol "brilliance" ;
+		lv2:name "Brilliance" ;
+		lv2:portProperty lv2:integer, lv2:toggled;
+		lv2:default 1 ;
+		lv2:minimum 0 ;
+		lv2:maximum 1 ;
+	], [
+		a lv2:AudioPort, lv2:InputPort ;
+		lv2:index 6 ;
 		lv2:symbol "in" ;
 		lv2:name "In"
 	] , [
 		a lv2:AudioPort, lv2:OutputPort ;
-		lv2:index 6 ;
+		lv2:index 7 ;
 		lv2:symbol "out" ;
 		lv2:name "Out"
 	] .

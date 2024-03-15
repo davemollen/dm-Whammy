@@ -70,6 +70,7 @@ impl Plugin for DmShredmaster {
     let contour = self.params.contour.value();
     let treble = self.params.treble.value();
     let volume = self.params.volume.value();
+    let brilliance = self.params.brilliance.value();
 
     buffer.iter_samples().for_each(|mut channel_samples| {
       let left_channel_in = channel_samples.get_mut(0).unwrap();
@@ -84,6 +85,7 @@ impl Plugin for DmShredmaster {
         contour,
         treble,
         volume,
+        brilliance,
       );
 
       let left_channel_out = channel_samples.get_mut(0).unwrap();

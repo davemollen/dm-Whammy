@@ -8,6 +8,7 @@
         modgui:stylesheet <modgui/stylesheet-dm-shredmaster.css> ;
         modgui:screenshot <modgui/screenshot-dm-shredmaster.png> ;
         modgui:thumbnail <modgui/thumbnail-dm-shredmaster.png> ;
+        modgui:javascript <modgui/javascript.js> ;
         modgui:brand "DM" ;
         modgui:label "Shredmaster" ;
         modgui:model "boxy" ;
@@ -34,5 +35,9 @@
             lv2:index 4 ;
             lv2:symbol "volume" ;
             lv2:name "Volume" ;
+        ] , [
+            lv2:index 5 ;
+            lv2:symbol "brilliance" ;
+            lv2:name "Brilliance" ;
         ] ;
     ] .

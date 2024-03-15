@@ -1,5 +1,6 @@
 use nih_plug::{
   formatters::{s2v_f32_percentage, v2s_f32_percentage},
+  params::BoolParam,
   prelude::{FloatParam, FloatRange, Params},
 };
 use nih_plug_vizia::ViziaState;
@@ -28,6 +29,9 @@ pub struct ShredmasterParameters {
 
   #[id = "volume"]
   pub volume: FloatParam,
+
+  #[id = "brilliance"]
+  pub brilliance: BoolParam,
 }
 
 impl Default for ShredmasterParameters {
@@ -59,6 +63,8 @@ impl Default for ShredmasterParameters {
         .with_unit(" %")
         .with_value_to_string(v2s_f32_percentage(2))
         .with_string_to_value(s2v_f32_percentage()),
+
+      brilliance: BoolParam::new("Brilliance", false),
     }
   }
 }
