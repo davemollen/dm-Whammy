@@ -1,6 +1,6 @@
 use nih_plug::prelude::*;
 use shredmaster::Shredmaster;
-use std::{f32::consts::FRAC_1_SQRT_2, sync::Arc};
+use std::sync::Arc;
 mod shredmaster_parameters;
 use shredmaster_parameters::ShredmasterParameters;
 mod editor;
@@ -28,8 +28,8 @@ impl Plugin for DmShredmaster {
   const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
   const AUDIO_IO_LAYOUTS: &'static [AudioIOLayout] = &[AudioIOLayout {
-    main_input_channels: NonZeroU32::new(2),
-    main_output_channels: NonZeroU32::new(2),
+    main_input_channels: NonZeroU32::new(1),
+    main_output_channels: NonZeroU32::new(1),
     ..AudioIOLayout::const_default()
   }];
   const MIDI_INPUT: MidiConfig = MidiConfig::None;
@@ -73,25 +73,13 @@ impl Plugin for DmShredmaster {
     let brilliance = self.params.brilliance.value();
 
     buffer.iter_samples().for_each(|mut channel_samples| {
-      let left_channel_in = channel_samples.get_mut(0).unwrap();
-      let input_left = *left_channel_in;
-      let right_channel_in = channel_samples.get_mut(1).unwrap();
-      let input_right = *right_channel_in;
+      let input = channel_samples.get_mut(0).unwrap();
+      let shredmaster_output = self
+        .shredmaster
+        .process(*input, gain, bass, contour, treble, volume, brilliance);
 
-      let repeat_output = self.shredmaster.process(
-        (input_left + input_right) * FRAC_1_SQRT_2,
-        gain,
-        bass,
-        contour,
-        treble,
-        volume,
-        brilliance,
-      );
-
-      let left_channel_out = channel_samples.get_mut(0).unwrap();
-      *left_channel_out = repeat_output;
-      let right_channel_out = channel_samples.get_mut(1).unwrap();
-      *right_channel_out = repeat_output;
+      let output = channel_samples.get_mut(0).unwrap();
+      *output = shredmaster_output;
     });
     ProcessStatus::Normal
   }
