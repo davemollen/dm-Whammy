@@ -19,7 +19,7 @@ You can download the VST3 and CLAP plugins for Linux, Windows and macOS from the
 
 On macOS you may need to [disable Gatekeeper](https://disable-gatekeeper.github.io/) as Apple has recently made it more difficult to run unsigned code on macOS.
 
-If you want to build the plugin on your own machine, check out the [nih-plug readme](https://github.com/robbert-vdh/nih-plug). Build scripts for macOS specifically can be found in the [./scripts](./scripts/) folder of this repository.
+If you want to build the plugin on your own machine, check out the [nih-plug readme](https://github.com/robbert-vdh/nih-plug).
 
 ## MOD devices installation
 
