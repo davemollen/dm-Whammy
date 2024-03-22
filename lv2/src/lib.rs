@@ -43,7 +43,7 @@ impl Plugin for DmShredmaster {
     let contour = *ports.contour;
     let treble = *ports.treble;
     let volume = *ports.volume;
-    let brilliance = *ports.brilliance == 1;
+    let brilliance = *ports.brilliance == 1.;
 
     for (input, output) in ports.input.iter().zip(ports.output.iter_mut()) {
       *output = self
