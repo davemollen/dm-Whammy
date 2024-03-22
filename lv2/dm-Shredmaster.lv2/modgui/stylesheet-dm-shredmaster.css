@@ -177,7 +177,7 @@
 }
 /* TOGGLE LIGHT */
 .mod-pedal-boxy{{{cns}}}.mod-five-knobs .mod-control-group .mod-knob .mod-toggle-light {
-    background-image:url(/resources/pedals/red-light-off.png);
+    background-image:url(/resources/pedals/red-light-off.png{{{ns}}});
     background-position-y: bottom;
     background-repeat:no-repeat;
     background-size:20px 20px;
@@ -188,7 +188,7 @@
     position: absolute;
 }
 .mod-pedal-boxy{{{cns}}}.mod-five-knobs .mod-control-group .mod-knob .mod-toggle-image.on > .mod-toggle-light {
-    background-image:url(/resources/pedals/red-light-on.png);
+    background-image:url(/resources/pedals/red-light-on.png{{{ns}}});
 }
 
 /* = BACKGROUND IMAGES - Color of the pedal
