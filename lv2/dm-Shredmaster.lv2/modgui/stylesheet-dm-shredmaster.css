@@ -165,7 +165,7 @@
 /* TOGGLE */
 .mod-pedal-boxy{{{cns}}}.mod-five-knobs .mod-control-group .mod-knob .mod-toggle-image {
     background-image:url(/resources/pedals/toggle.png{{{ns}}});
-    background-position: right top !important;
+    background-position: right bottom !important;
     background-repeat:no-repeat;
     background-size:33px 96px;
     cursor:pointer;
@@ -173,7 +173,7 @@
     height: 48px;
 }
 .mod-pedal-boxy{{{cns}}}.mod-five-knobs .mod-control-group .mod-knob .mod-toggle-image.on {
-    background-position-y: bottom !important;
+    background-position-y: top !important;
 }
 /* TOGGLE LIGHT */
 .mod-pedal-boxy{{{cns}}}.mod-five-knobs .mod-control-group .mod-knob .mod-toggle-light {
