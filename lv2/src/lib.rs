@@ -7,8 +7,8 @@ use shredmaster::Shredmaster;
 struct Ports {
   gain: InputPort<Control>,
   bass: InputPort<Control>,
-  treble: InputPort<Control>,
   contour: InputPort<Control>,
+  treble: InputPort<Control>,
   volume: InputPort<Control>,
   brilliance: InputPort<Control>,
   input: InputPort<Audio>,
