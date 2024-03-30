@@ -1,6 +1,6 @@
-## dm-Shredmaster
+## dm-Whammy
 
-A mono distortion effect written in Rust.
+A mono pitchshift effect written in Rust.
 
 The effect can be compiled to a [MOD devices](https://moddevices.com/), VST3 or CLAP plugin.
 VST is a trademark of Steinberg Media Technologies GmbH, registered in Europe and other countries.
@@ -15,7 +15,7 @@ VST is a trademark of Steinberg Media Technologies GmbH, registered in Europe an
 
 ## Download VST3 and CLAP plugin
 
-You can download the VST3 and CLAP plugins for Linux, Windows and macOS from the [release page](https://github.com/davemollen/dm-Shredmaster/releases).
+You can download the VST3 and CLAP plugins for Linux, Windows and macOS from the [release page](https://github.com/davemollen/dm-Whammy/releases).
 
 On macOS you may need to [disable Gatekeeper](https://disable-gatekeeper.github.io/) as Apple has recently made it more difficult to run unsigned code on macOS.
 
@@ -24,7 +24,7 @@ If you want to build the plugin on your own machine, check out the [nih-plug rea
 ## MOD devices installation
 
 This plugin is not yet in the MOD Audio plugin store.
-However, you can find a build of the plugin for the MOD Dwarf at [./lv2/dm-Shredmaster.lv2](./lv2/dm-Shredmaster.lv2/). Copy this file to your MOD devices' plugin folder. If you want a build for MOD Duo or MOD Duo X you'll need to build the plugin yourself for now. For more information about building this plugin for your MOD device, see [these instructions](https://github.com/moddevices/mod-plugin-builder).
+However, you can find a build of the plugin for the MOD Dwarf at [./lv2/dm-Whammy.lv2](./lv2/dm-Whammy.lv2/). Copy this file to your MOD devices' plugin folder. If you want a build for MOD Duo or MOD Duo X you'll need to build the plugin yourself for now. For more information about building this plugin for your MOD device, see [these instructions](https://github.com/moddevices/mod-plugin-builder).
 
 ## Other plugin formats
 
