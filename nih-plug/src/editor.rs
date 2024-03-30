@@ -1,11 +1,8 @@
 #[path = "./editor/components/param_knob.rs"]
 mod param_knob;
 use param_knob::{ParamKnob, ParamKnobSize};
-#[path = "./editor/components/param_checkbox.rs"]
-mod param_checkbox;
-use param_checkbox::ParamCheckbox;
 mod ui_data;
-use crate::shredmaster_parameters::ShredmasterParameters;
+use crate::whammy_parameters::WhammyParameters;
 use nih_plug::params::Param;
 use nih_plug::prelude::Editor;
 use nih_plug_vizia::vizia::{
@@ -27,7 +24,7 @@ pub(crate) fn default_state() -> Arc<ViziaState> {
 }
 
 pub(crate) fn create(
-  params: Arc<ShredmasterParameters>,
+  params: Arc<WhammyParameters>,
   editor_state: Arc<ViziaState>,
 ) -> Option<Box<dyn Editor>> {
   create_vizia_editor(
@@ -46,67 +43,17 @@ pub(crate) fn create(
         HStack::new(cx, |cx| {
           ParamKnob::new(
             cx,
-            params.gain.name(),
+            params.pitch.name(),
             UiData::params,
-            params.gain.as_ptr(),
-            |params| &params.gain,
+            params.pitch.as_ptr(),
+            |params| &params.pitch,
             |param_ptr, val| ParamChangeEvent::SetParam(param_ptr, val),
             ParamKnobSize::Regular,
           );
-
-          ParamKnob::new(
-            cx,
-            params.bass.name(),
-            UiData::params,
-            params.bass.as_ptr(),
-            |params| &params.bass,
-            |param_ptr, val| ParamChangeEvent::SetParam(param_ptr, val),
-            ParamKnobSize::Regular,
-          );
-
-          ParamKnob::new(
-            cx,
-            params.contour.name(),
-            UiData::params,
-            params.contour.as_ptr(),
-            |params| &params.contour,
-            |param_ptr, val| ParamChangeEvent::SetParam(param_ptr, val),
-            ParamKnobSize::Regular,
-          );
-
-          ParamKnob::new(
-            cx,
-            params.treble.name(),
-            UiData::params,
-            params.treble.as_ptr(),
-            |params| &params.treble,
-            |param_ptr, val| ParamChangeEvent::SetParam(param_ptr, val),
-            ParamKnobSize::Regular,
-          );
-
-          ParamKnob::new(
-            cx,
-            params.volume.name(),
-            UiData::params,
-            params.volume.as_ptr(),
-            |params| &params.volume,
-            |param_ptr, val| ParamChangeEvent::SetParam(param_ptr, val),
-            ParamKnobSize::Regular,
-          );
-
-          ParamCheckbox::new(
-            cx,
-            params.brilliance.name(),
-            UiData::params,
-            params.brilliance.as_ptr(),
-            |params| &params.brilliance,
-            |param_ptr, val| ParamChangeEvent::SetParam(param_ptr, val),
-          )
-          .top(Pixels(-4.0));
         })
         .child_space(Stretch(1.0));
 
-        Label::new(cx, "ShredMaster")
+        Label::new(cx, "Whammy")
           .font_size(32.0)
           .font_weight(FontWeightKeyword::ExtraBold)
           .color("#C9C06A")

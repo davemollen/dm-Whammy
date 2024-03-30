@@ -1,29 +1,29 @@
 use nih_plug::prelude::*;
-use shredmaster::Shredmaster;
 use std::sync::Arc;
-mod shredmaster_parameters;
-use shredmaster_parameters::ShredmasterParameters;
+use whammy::Whammy;
+mod whammy_parameters;
+use whammy_parameters::WhammyParameters;
 mod editor;
 
-struct DmShredmaster {
-  params: Arc<ShredmasterParameters>,
-  shredmaster: Shredmaster,
+struct DmWhammy {
+  params: Arc<WhammyParameters>,
+  whammy: Whammy,
 }
 
-impl Default for DmShredmaster {
+impl Default for DmWhammy {
   fn default() -> Self {
-    let params = Arc::new(ShredmasterParameters::default());
+    let params = Arc::new(WhammyParameters::default());
     Self {
       params: params.clone(),
-      shredmaster: Shredmaster::new(44100.),
+      whammy: Whammy::new(44100.),
     }
   }
 }
 
-impl Plugin for DmShredmaster {
-  const NAME: &'static str = "dm-Shredmaster";
+impl Plugin for DmWhammy {
+  const NAME: &'static str = "dm-Whammy";
   const VENDOR: &'static str = "DM";
-  const URL: &'static str = "https://github.com/davemollen/dm-Shredmaster";
+  const URL: &'static str = "https://github.com/davemollen/dm-Whammy";
   const EMAIL: &'static str = "davemollen@gmail.com";
   const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
@@ -55,7 +55,7 @@ impl Plugin for DmShredmaster {
     buffer_config: &BufferConfig,
     _context: &mut impl InitContext<Self>,
   ) -> bool {
-    self.shredmaster = Shredmaster::new(buffer_config.sample_rate);
+    self.whammy = Whammy::new(buffer_config.sample_rate);
     true
   }
 
@@ -65,21 +65,14 @@ impl Plugin for DmShredmaster {
     _aux: &mut AuxiliaryBuffers,
     _context: &mut impl ProcessContext<Self>,
   ) -> ProcessStatus {
-    let gain = self.params.gain.value();
-    let bass = self.params.bass.value();
-    let contour = self.params.contour.value();
-    let treble = self.params.treble.value();
-    let volume = self.params.volume.value();
-    let brilliance = self.params.brilliance.value();
+    let pitch = self.params.pitch.value();
 
     buffer.iter_samples().for_each(|mut channel_samples| {
       let input = channel_samples.get_mut(0).unwrap();
-      let shredmaster_output = self
-        .shredmaster
-        .process(*input, gain, bass, contour, treble, volume, brilliance);
+      let whammy_output = self.whammy.process(*input, pitch);
 
       let output = channel_samples.get_mut(0).unwrap();
-      *output = shredmaster_output;
+      *output = whammy_output;
     });
     ProcessStatus::Normal
   }
@@ -89,27 +82,27 @@ impl Plugin for DmShredmaster {
   fn deactivate(&mut self) {}
 }
 
-impl ClapPlugin for DmShredmaster {
-  const CLAP_ID: &'static str = "dm-Shredmaster";
-  const CLAP_DESCRIPTION: Option<&'static str> = Some("A distortion plugin");
+impl ClapPlugin for DmWhammy {
+  const CLAP_ID: &'static str = "dm-Whammy";
+  const CLAP_DESCRIPTION: Option<&'static str> = Some("A pitchshift plugin");
   const CLAP_MANUAL_URL: Option<&'static str> = Some(Self::URL);
   const CLAP_SUPPORT_URL: Option<&'static str> = None;
   const CLAP_FEATURES: &'static [ClapFeature] = &[
     ClapFeature::AudioEffect,
     ClapFeature::Mono,
     ClapFeature::Utility,
-    ClapFeature::Distortion,
+    ClapFeature::PitchShifter,
   ];
 }
 
-impl Vst3Plugin for DmShredmaster {
-  const VST3_CLASS_ID: [u8; 16] = *b"dm-Shredmaster..";
+impl Vst3Plugin for DmWhammy {
+  const VST3_CLASS_ID: [u8; 16] = *b"dm-Whammy.......";
   const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[
     Vst3SubCategory::Fx,
     Vst3SubCategory::Mono,
-    Vst3SubCategory::Distortion,
+    Vst3SubCategory::PitchShift,
   ];
 }
 
-nih_export_clap!(DmShredmaster);
-nih_export_vst3!(DmShredmaster);
+nih_export_clap!(DmWhammy);
+nih_export_vst3!(DmWhammy);

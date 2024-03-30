@@ -889,12 +889,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "dm_shredmaster"
+name = "dm_whammy"
 version = "0.1.0"
 dependencies = [
  "nih_plug",
  "nih_plug_vizia",
- "shredmaster",
+ "whammy",
 ]
 
 [[package]]
@@ -2589,10 +2589,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "shredmaster"
-version = "0.1.0"
-
-[[package]]
 name = "signal-hook-registry"
 version = "1.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3265,6 +3261,10 @@ dependencies = [
  "js-sys",
  "wasm-bindgen",
 ]
+
+[[package]]
+name = "whammy"
+version = "0.1.0"
 
 [[package]]
 name = "widestring"

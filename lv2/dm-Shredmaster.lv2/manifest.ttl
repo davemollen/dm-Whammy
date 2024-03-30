@@ -1,9 +1,0 @@
-@prefix lv2:  <http://lv2plug.in/ns/lv2core#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-
-<https://github.com/davemollen/dm-Shredmaster>
-    a lv2:Plugin ;
-    lv2:binary <libdm_shredmaster.so> ;
-    rdfs:seeAlso <dm-Shredmaster_dsp.ttl>  .
-<https://github.com/davemollen/dm-Shredmaster> rdfs:seeAlso <modgui.ttl> .
-<https://github.com/davemollen/dm-Shredmaster> rdfs:seeAlso <modgui.ttl> .
