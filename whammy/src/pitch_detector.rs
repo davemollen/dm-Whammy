@@ -1,7 +1,7 @@
 mod one_pole_filter;
 use one_pole_filter::{Mode, OnePoleFilter};
-mod delta;
-use delta::Delta;
+
+use crate::shared::delta::Delta;
 
 // TODO: improve the stability of this simple pitch detection algorithm
 pub struct PitchDetector {

@@ -31,10 +31,10 @@ impl Grain {
     self.time_ramp.is_finished()
   }
 
-  pub fn set_parameters(&mut self, freq: f32, window_size: f32, pitch: f32, offset: f32) {
+  pub fn set_parameters(&mut self, freq: f32, window_size: f32, pitch: f32, start_position: f32) {
     self.freq = freq;
     self.window_size = window_size;
-    self.start_position = offset;
+    self.start_position = start_position;
     self.time_ramp.start(None);
 
     let speed = 2_f32.powf(pitch / 12.);

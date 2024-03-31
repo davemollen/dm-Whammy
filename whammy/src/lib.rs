@@ -2,6 +2,7 @@ mod pitch_detector;
 use pitch_detector::PitchDetector;
 pub mod shared {
   pub mod delay_line;
+  pub mod delta;
   pub mod float_ext;
 }
 mod grains;
