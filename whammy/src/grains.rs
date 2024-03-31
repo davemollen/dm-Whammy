@@ -3,6 +3,7 @@ use grain::Grain;
 
 use crate::shared::delay_line::DelayLine;
 
+const TARGET_FREQUENCY: f32 = 15.;
 const VOICES: usize = 4;
 
 pub struct Grains {
@@ -41,8 +42,9 @@ impl Grains {
   fn set_grain_parameters(&mut self, freq: f32, pitch: f32) {
     let offset = 1000. / freq;
     // TODO: get a subdivision that's a power of two or a whole number, but also fits in a specified range (like between 5 and 20Hz)
+    // let grain_freq = (freq / TARGET_FREQUENCY).trunc() / freq;
     let grain_freq = freq / VOICES as f32;
-    let window_size = 1000. / freq;
+    let window_size = 1000. / grain_freq;
 
     let (start, end) = self.grains.split_at(self.index);
     let index = start.iter().chain(end).position(|grain| grain.is_free());
