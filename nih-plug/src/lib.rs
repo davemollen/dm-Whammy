@@ -68,11 +68,9 @@ impl Plugin for DmWhammy {
     let pitch = self.params.pitch.value();
 
     buffer.iter_samples().for_each(|mut channel_samples| {
-      let input = channel_samples.get_mut(0).unwrap();
-      let whammy_output = self.whammy.process(*input, pitch);
-
-      let output = channel_samples.get_mut(0).unwrap();
-      *output = whammy_output;
+      let sample = channel_samples.iter_mut().next().unwrap();
+      let whammy_output = self.whammy.process(*sample, pitch);
+      *sample = whammy_output;
     });
     ProcessStatus::Normal
   }
