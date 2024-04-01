@@ -20,7 +20,7 @@ const STYLE: &str = include_str!("./editor/style.css");
 
 // Makes sense to also define this here, makes it a bit easier to keep track of
 pub(crate) fn default_state() -> Arc<ViziaState> {
-  ViziaState::new(|| (440, 200))
+  ViziaState::new(|| (160, 160))
 }
 
 pub(crate) fn create(
@@ -52,23 +52,9 @@ pub(crate) fn create(
           );
         })
         .child_space(Stretch(1.0));
-
-        Label::new(cx, "Whammy")
-          .font_size(32.0)
-          .font_weight(FontWeightKeyword::ExtraBold)
-          .color("#C9C06A")
-          .border_color("#C9C06A")
-          .border_width(Pixels(1.0))
-          .child_space(Stretch(1.0))
-          .width(Pixels(200.0))
-          .height(Pixels(36.0))
-          .top(Pixels(32.0))
-          .bottom(Pixels(32.0))
-          .left(Stretch(1.0))
-          .right(Stretch(1.0));
       })
       .child_space(Pixels(16.0))
-      .background_color("#161616");
+      .background_color("#CB3231");
     },
   )
 }
