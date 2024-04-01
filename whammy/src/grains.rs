@@ -5,7 +5,7 @@ use phasor::Phasor;
 
 use crate::shared::{delay_line::DelayLine, delta::Delta};
 
-const TARGET_FREQUENCY: f32 = 20.;
+const TARGET_FREQUENCY: f32 = 14.;
 const VOICES: usize = 4;
 
 pub struct Grains {
@@ -27,20 +27,20 @@ impl Grains {
     }
   }
 
-  pub fn process(&mut self, input: f32, pitch: f32, freq: f32, pitch_trigger: bool) -> f32 {
-    // get a subdivision that's a power of two or a whole number, but also fits in a specified range (like between 5 and 20Hz)
+  pub fn process(&mut self, input: f32, pitch: f32, freq: Option<f32>) -> f32 {
+    match freq {
+      Some(freq) => {
+        let offset = 1000. / freq;
+        let grain_freq = freq / ((freq / TARGET_FREQUENCY).trunc());
+        let phasor = self.phasor.process(grain_freq * VOICES as f32);
+        let trigger = self.delta.process(phasor) < 0.;
 
-    let offset = 1000. / freq;
-    let grain_freq = freq / ((freq / TARGET_FREQUENCY).trunc());
-    let phasor = self.phasor.process(grain_freq * VOICES as f32);
-    let trigger = self.delta.process(phasor) < 0.;
-    if pitch_trigger {
-      self.phasor.reset();
-    }
-
-    if trigger {
-      self.set_grain_parameters(grain_freq, pitch, offset);
-    }
+        if trigger {
+          self.set_grain_parameters(grain_freq, pitch, offset);
+        }
+      }
+      None => (),
+    };
 
     let grain_delay_line = &mut self.grain_delay_line;
     let output = self

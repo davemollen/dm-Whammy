@@ -23,7 +23,6 @@ impl Whammy {
 
   pub fn process(&mut self, input: f32, pitch: f32) -> f32 {
     let freq = self.pitch_detector.get_frequency(input);
-    let trigger = self.pitch_detector.get_trigger();
-    self.grains.process(input, pitch, freq, trigger)
+    self.grains.process(input, pitch, freq)
   }
 }
