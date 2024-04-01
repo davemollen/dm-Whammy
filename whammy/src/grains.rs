@@ -2,11 +2,13 @@ mod grain;
 use grain::Grain;
 mod phasor;
 use phasor::Phasor;
+mod bit_floor;
+// use bit_floor::BitFloor;
 
 use crate::shared::{delay_line::DelayLine, delta::Delta};
 
-const TARGET_FREQUENCY: f32 = 14.;
-const VOICES: usize = 4;
+const TARGET_FREQUENCY: f32 = 10.;
+const VOICES: usize = 8;
 
 pub struct Grains {
   grain_delay_line: DelayLine,
@@ -31,7 +33,10 @@ impl Grains {
     match freq {
       Some(freq) => {
         let offset = 1000. / freq;
-        let grain_freq = freq / ((freq / TARGET_FREQUENCY).trunc());
+        // let division = (freq / TARGET_FREQUENCY).trunc() as u32;
+        // let grain_freq = freq / division.bit_floor() as f32;
+        let division = (freq / TARGET_FREQUENCY).trunc();
+        let grain_freq = freq / division;
         let phasor = self.phasor.process(grain_freq * VOICES as f32);
         let trigger = self.delta.process(phasor) < 0.;
 

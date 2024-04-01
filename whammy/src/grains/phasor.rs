@@ -14,10 +14,6 @@ impl Phasor {
     self.x
   }
 
-  pub fn reset(&mut self) {
-    self.x = 0.;
-  }
-
   fn wrap(&self, input: f32) -> f32 {
     if input >= 1. {
       input - 1.
