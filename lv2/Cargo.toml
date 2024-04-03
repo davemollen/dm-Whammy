@@ -1,0 +1,13 @@
+[package]
+name = "dm_whammy"
+version = "0.1.0"
+authors = ["davemollen <davemollen@gmail.com>"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+lv2 = "0.6.0"
+whammy = { path = "../whammy" }
+
+[lib]
+crate-type = ["cdylib"]

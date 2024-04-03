@@ -10,8 +10,8 @@ defaults:
     shell: bash
 
 env:
-  binary_name: dm_shredmaster
-  plugin_name: dm-Shredmaster
+  binary_name: dm_whammy
+  plugin_name: dm-Whammy
 
 jobs:
   package-nih-plug:

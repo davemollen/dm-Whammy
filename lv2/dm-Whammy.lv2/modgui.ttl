@@ -1,0 +1,22 @@
+@prefix modgui: <http://moddevices.com/ns/modgui#> .
+@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
+
+<https://github.com/davemollen/dm-Whammy>
+    modgui:gui [
+        modgui:resourcesDirectory <modgui> ;
+        modgui:iconTemplate <modgui/icon-dm-whammy.html> ;
+        modgui:stylesheet <modgui/stylesheet-dm-whammy.css> ;
+        modgui:screenshot <modgui/screenshot-dm-whammy.png> ;
+        modgui:thumbnail <modgui/thumbnail-dm-whammy.png> ;
+        modgui:brand "DM" ;
+        modgui:label "Whammy" ;
+        modgui:model "boxy" ;
+        modgui:panel "1-knob" ;
+        modgui:color "red" ;
+        modgui:knob "black" ;
+        modgui:port [
+            lv2:index 0 ;
+            lv2:symbol "pitch" ;
+            lv2:name "Pitch" ;
+        ] ;
+    ] .
