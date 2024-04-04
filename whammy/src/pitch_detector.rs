@@ -30,7 +30,7 @@ impl PitchDetector {
     let zero_cross = self.delta.process(if filtered > 0. { 1. } else { 0. }) > 0.;
     if zero_cross {
       let frequency = self.sample_rate / self.counter;
-      if frequency > 30. && frequency < 1500. {
+      if frequency > 50. && frequency < 1500. {
         self.frequency = Some(frequency);
       }
       self.counter = 0.;
