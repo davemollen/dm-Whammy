@@ -26,7 +26,7 @@ impl PitchDetector {
   pub fn get_frequency(&mut self, input: f32) -> Option<f32> {
     self.counter += 1.;
 
-    let filtered = self.filter.process(input, 400., Mode::Hertz);
+    let filtered = self.filter.process(input, 20., Mode::Hertz);
     let zero_cross = self.delta.process(if filtered > 0. { 1. } else { 0. }) > 0.;
     if zero_cross {
       let frequency = self.sample_rate / self.counter;

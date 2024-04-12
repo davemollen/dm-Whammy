@@ -1,6 +1,6 @@
 mod ramp;
 use ramp::Ramp;
-use std::f32::consts::PI;
+use std::f32::consts::TAU;
 
 use crate::shared::{
   delay_line::{DelayLine, Interpolation},
@@ -46,8 +46,8 @@ impl Grain {
     let time = self.get_time(speed);
     let window = self.get_window();
 
-    let grains_out = grain_delay_line.read(time + self.start_position, Interpolation::Linear);
-    grains_out * window * window
+    let grains_out = grain_delay_line.read(time + self.start_position, Interpolation::Cubic);
+    grains_out * window
   }
 
   fn get_time(&mut self, speed: f32) -> f32 {
@@ -61,6 +61,6 @@ impl Grain {
   }
 
   fn get_window(&mut self) -> f32 {
-    (self.time_ramp.get_progress() * PI).fast_sin()
+    0.5 - 0.5 * (self.time_ramp.get_progress() * TAU).fast_cos()
   }
 }

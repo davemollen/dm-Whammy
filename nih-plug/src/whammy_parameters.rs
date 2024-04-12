@@ -26,8 +26,8 @@ impl Default for WhammyParameters {
         "Pitch",
         12.,
         FloatRange::Linear {
-          min: -12.,
-          max: 12.,
+          min: -24.,
+          max: 24.,
         },
       )
       .with_value_to_string(v2s_f32_digits(2)),
