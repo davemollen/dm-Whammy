@@ -10,6 +10,9 @@ use grains::Grains;
 mod ramp_smooth;
 use ramp_smooth::RampSmooth;
 
+pub const MIN_PITCH: f32 = -24.;
+pub const MAX_PITCH: f32 = 24.;
+
 pub struct Whammy {
   pitch_detector: PitchDetector,
   smooth_pitch: RampSmooth,

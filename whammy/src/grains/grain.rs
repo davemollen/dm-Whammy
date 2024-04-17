@@ -10,7 +10,6 @@ use crate::shared::{
 #[derive(Clone)]
 pub struct Grain {
   freq: f32,
-  start_position: f32,
   window_size: f32,
   time_ramp: Ramp,
   time_ramp_max: f32,
@@ -20,7 +19,6 @@ impl Grain {
   pub fn new(sample_rate: f32) -> Self {
     Self {
       freq: 0.,
-      start_position: 0.,
       window_size: 0.,
       time_ramp: Ramp::new(sample_rate),
       time_ramp_max: 1.,
@@ -31,10 +29,9 @@ impl Grain {
     self.time_ramp.is_finished()
   }
 
-  pub fn set_parameters(&mut self, freq: f32, window_size: f32, pitch: f32, start_position: f32) {
+  pub fn set_parameters(&mut self, freq: f32, window_size: f32, pitch: f32) {
     self.freq = freq;
     self.window_size = window_size;
-    self.start_position = start_position;
     self.time_ramp.start(None);
 
     let speed = 2_f32.powf(pitch / 12.);
@@ -46,7 +43,7 @@ impl Grain {
     let time = self.get_time(speed);
     let window = self.get_window();
 
-    let grains_out = grain_delay_line.read(time + self.start_position, Interpolation::Cubic);
+    let grains_out = grain_delay_line.read(time, Interpolation::Cubic);
     grains_out * window
   }
 

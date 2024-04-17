@@ -3,7 +3,10 @@ use one_pole_filter::{Mode, OnePoleFilter};
 
 use crate::shared::delta::Delta;
 
-// TODO: improve the stability of this simple pitch detection algorithm
+pub const MIN_FREQ: f32 = 50.;
+const MAX_FREQ: f32 = 1500.;
+
+// TODO: replace this with a better pitch detector
 pub struct PitchDetector {
   sample_rate: f32,
   filter: OnePoleFilter,
@@ -30,7 +33,7 @@ impl PitchDetector {
     let zero_cross = self.delta.process(if filtered > 0. { 1. } else { 0. }) > 0.;
     if zero_cross {
       let frequency = self.sample_rate / self.counter;
-      if frequency > 50. && frequency < 1500. {
+      if frequency > MIN_FREQ && frequency < MAX_FREQ {
         self.frequency = Some(frequency);
       }
       self.counter = 0.;

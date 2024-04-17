@@ -1,5 +1,6 @@
 use nih_plug::prelude::{FloatParam, FloatRange, Params};
 use nih_plug_vizia::ViziaState;
+use whammy::{MAX_PITCH, MIN_PITCH};
 use std::sync::Arc;
 mod custom_formatters;
 use custom_formatters::v2s_f32_digits;
@@ -26,8 +27,8 @@ impl Default for WhammyParameters {
         "Pitch",
         12.,
         FloatRange::Linear {
-          min: -24.,
-          max: 24.,
+          min: MIN_PITCH,
+          max: MAX_PITCH,
         },
       )
       .with_value_to_string(v2s_f32_digits(2)),
