@@ -48,7 +48,7 @@ impl Grains {
       .iter_mut()
       .filter(|grain| !grain.is_free())
       .map(|grain| grain.process(grain_delay_line, pitch))
-      .sum::<f32>() * 0.5;
+      .sum::<f32>() * (VOICES as f32 / 2.).recip();
 
     self.grain_delay_line.write(input);
 
