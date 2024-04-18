@@ -72,6 +72,14 @@ impl Grains {
   }
 
   fn get_grain_freq(freq: f32, speed: f32) -> f32 {
-    freq * speed.abs() / (freq / GRAIN_FREQ_MULTIPLIER).trunc()
+    let division = freq / GRAIN_FREQ_MULTIPLIER;
+    let division = if division < 10. {
+      (division * 4.).trunc()
+    } else if division < 20. {
+      (division * 2.).trunc()
+    } else {
+      division.trunc()
+    };
+    freq * speed.abs() / division
   }
 }
