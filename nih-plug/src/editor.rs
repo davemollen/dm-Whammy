@@ -7,10 +7,9 @@ use nih_plug::params::Param;
 use nih_plug::prelude::Editor;
 use nih_plug_vizia::vizia::{
   model::Model,
-  modifiers::{LayoutModifiers, StyleModifiers, TextModifiers},
+  modifiers::{LayoutModifiers, StyleModifiers},
   prelude::Units::{Pixels, Stretch},
-  style::FontWeightKeyword,
-  views::{HStack, Label, VStack},
+  views::{HStack, VStack},
 };
 use nih_plug_vizia::{create_vizia_editor, ViziaState, ViziaTheming};
 use std::sync::Arc;

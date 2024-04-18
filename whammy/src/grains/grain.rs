@@ -29,21 +29,19 @@ impl Grain {
     self.time_ramp.is_finished()
   }
 
-  pub fn set_parameters(&mut self, freq: f32, window_size: f32, pitch: f32) {
+  pub fn set_parameters(&mut self, freq: f32, window_size: f32, speed: f32) {
     self.freq = freq;
     self.window_size = window_size;
     self.time_ramp.start(None);
 
-    let speed = 2_f32.powf(pitch / 12.);
-    self.time_ramp_max = ((1. - speed) * freq).abs() / freq;
+    self.time_ramp_max = (speed * freq).abs() / freq;
   }
 
-  pub fn process(&mut self, grain_delay_line: &mut DelayLine, pitch: f32) -> f32 {
-    let speed = 2_f32.powf(pitch / 12.);
+  pub fn process(&mut self, grain_delay_line: &mut DelayLine, speed: f32) -> f32 {
     let time = self.get_time(speed);
     let window = self.get_window();
 
-    let grains_out = grain_delay_line.read(time, Interpolation::Cubic);
+    let grains_out = grain_delay_line.read(time, Interpolation::Linear);
     grains_out * window
   }
 
@@ -52,7 +50,7 @@ impl Grain {
       self.time_ramp.run(self.freq, 0., 1.);
       0.
     } else {
-      let ramp_freq = (1. - speed) * self.freq;
+      let ramp_freq = speed * self.freq;
       self.time_ramp.run(ramp_freq, 0., self.time_ramp_max) * self.window_size
     }
   }

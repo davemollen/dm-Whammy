@@ -36,6 +36,7 @@ impl DelayLine {
       Interpolation::Step => self.step_interp(index),
       Interpolation::Linear => self.linear_interp(index, mix),
       Interpolation::Cosine => self.cosine_interp(index, mix),
+      // fix out of bound cubic and spline interpolation
       Interpolation::Cubic => self.cubic_interp(index - 1, mix),
       Interpolation::Spline => self.spline_interp(index - 1, mix),
     }
