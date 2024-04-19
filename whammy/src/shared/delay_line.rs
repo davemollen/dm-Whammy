@@ -27,7 +27,7 @@ impl DelayLine {
   }
 
   pub fn read(&mut self, time: f32, interp: Interpolation) -> f32 {
-    let read_pointer = (self.write_pointer - 1 + self.buffer.len()) as f32 - self.mstosamps(time);
+    let read_pointer = (self.write_pointer + self.buffer.len()) as f32 - self.mstosamps(time);
     let rounded_read_pointer = read_pointer.trunc();
     let mix = read_pointer - rounded_read_pointer;
     let index = rounded_read_pointer as usize;
@@ -36,9 +36,8 @@ impl DelayLine {
       Interpolation::Step => self.step_interp(index),
       Interpolation::Linear => self.linear_interp(index, mix),
       Interpolation::Cosine => self.cosine_interp(index, mix),
-      // fix out of bound cubic and spline interpolation
-      Interpolation::Cubic => self.cubic_interp(index - 1, mix),
-      Interpolation::Spline => self.spline_interp(index - 1, mix),
+      Interpolation::Cubic => self.cubic_interp(index, mix),
+      Interpolation::Spline => self.spline_interp(index, mix),
     }
   }
 
@@ -78,10 +77,10 @@ impl DelayLine {
   }
 
   fn cubic_interp(&self, index: usize, mix: f32) -> f32 {
-    let w = self.buffer[self.wrap(index)];
-    let x = self.buffer[self.wrap(index + 1)];
-    let y = self.buffer[self.wrap(index + 2)];
-    let z = self.buffer[self.wrap(index + 3)];
+    let w = self.buffer[self.wrap(index.checked_sub(1).unwrap_or(index + self.buffer.len() - 1))];
+    let x = self.buffer[self.wrap(index)];
+    let y = self.buffer[self.wrap(index + 1)];
+    let z = self.buffer[self.wrap(index + 2)];
 
     let a1 = 1. + mix;
     let aa = mix * a1;
@@ -96,15 +95,60 @@ impl DelayLine {
   }
 
   fn spline_interp(&self, index: usize, mix: f32) -> f32 {
-    let w = self.buffer[self.wrap(index)];
-    let x = self.buffer[self.wrap(index + 1)];
-    let y = self.buffer[self.wrap(index + 2)];
-    let z = self.buffer[self.wrap(index + 3)];
+    let w = self.buffer[self.wrap(index.checked_sub(1).unwrap_or(index + self.buffer.len() - 1))];
+    let x = self.buffer[self.wrap(index)];
+    let y = self.buffer[self.wrap(index + 1)];
+    let z = self.buffer[self.wrap(index + 2)];
 
     let c0 = x;
     let c1 = (0.5) * (y - w);
     let c2 = w - (2.5) * x + y + y - (0.5) * z;
     let c3 = (0.5) * (z - w) + (1.5) * (x - y);
     ((c3 * mix + c2) * mix + c1) * mix + c0
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::DelayLine;
+
+  #[test]
+  fn step_interp() {
+    let mut delay_line = DelayLine::new(2, 1.);
+    delay_line.buffer = vec![1., 0.];
+
+    assert_eq!(delay_line.step_interp(0), 1.);
+    assert_eq!(delay_line.step_interp(1), 0.);
+    assert_eq!(delay_line.step_interp(2), 1.);
+    assert_eq!(delay_line.step_interp(3), 0.);
+  }
+
+  #[test]
+  fn linear_interp() {
+    let mut delay_line = DelayLine::new(2, 1.);
+    delay_line.buffer = vec![1., 0.];
+
+    assert_eq!(delay_line.linear_interp(0, 0.), 1.);
+    assert_eq!(delay_line.linear_interp(0, 0.5), 0.5);
+    assert_eq!(delay_line.linear_interp(0, 1.), 0.);
+    assert_eq!(delay_line.linear_interp(1, 0.), 0.);
+    assert_eq!(delay_line.linear_interp(1, 0.5), 0.5);
+    assert_eq!(delay_line.linear_interp(1, 1.), 1.);
+  }
+
+  #[test]
+  fn cubic_interp() {
+    let mut delay_line = DelayLine::new(4, 1.);
+    delay_line.buffer = vec![1., 0.75, 0.5, 0.25];
+
+    assert_eq!(delay_line.cubic_interp(0, 0.), 1.);
+    assert_eq!(delay_line.cubic_interp(0, 0.5), 0.9375);
+    assert_eq!(delay_line.cubic_interp(0, 1.), 0.75);
+    assert_eq!(delay_line.cubic_interp(2, 0.), 0.5);
+    assert_eq!(delay_line.cubic_interp(2, 1.), 0.25);
+    assert_eq!(delay_line.cubic_interp(3, 0.), 0.25);
+    assert_eq!(delay_line.cubic_interp(3, 1.), 1.);
+    assert_eq!(delay_line.cubic_interp(4, 0.), 1.);
+    assert_eq!(delay_line.cubic_interp(4, 1.), 0.75);
   }
 }

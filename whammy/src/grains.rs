@@ -3,10 +3,9 @@ use grain::Grain;
 mod phasor;
 use phasor::Phasor;
 
-use crate::{shared::{delay_line::DelayLine, delta::Delta}, MIN_PITCH};
+use crate::shared::{delay_line::DelayLine, delta::Delta};
 
 const VOICES: usize = 4;
-const GRAIN_FREQ_MULTIPLIER: f32 = 16.;
 
 pub struct Grains {
   grain_delay_line: DelayLine,
@@ -17,10 +16,8 @@ pub struct Grains {
 
 impl Grains {
   pub fn new(sample_rate: f32) -> Self {
-    let min_grain_freq = GRAIN_FREQ_MULTIPLIER * Self::pitch_to_speed(MIN_PITCH).abs();
-
     Self {
-      grain_delay_line: DelayLine::new((sample_rate * min_grain_freq.recip().ceil()) as usize, sample_rate),
+      grain_delay_line: DelayLine::new((sample_rate * 1.) as usize, sample_rate),
       grains: vec![Grain::new(sample_rate); VOICES * 2],
       phasor: Phasor::new(sample_rate),
       delta: Delta::new(),
@@ -72,14 +69,21 @@ impl Grains {
   }
 
   fn get_grain_freq(freq: f32, speed: f32) -> f32 {
-    let division = freq / GRAIN_FREQ_MULTIPLIER;
-    let division = if division < 10. {
-      (division * 4.).trunc()
-    } else if division < 20. {
-      (division * 2.).trunc()
+    let division = if freq < 160. {
+      freq / 2.
+    } else if freq < 320. {
+      freq / 4.
+    } else if freq < 640. {
+      freq / 8.
     } else {
-      division.trunc()
-    };
-    freq * speed.abs() / division
+      freq / 16.
+    }.trunc();
+    let grain_freq = freq * speed.abs() / division;
+
+    if grain_freq < 7. {
+      grain_freq * 2.
+    } else {
+      grain_freq
+    }
   }
 }
