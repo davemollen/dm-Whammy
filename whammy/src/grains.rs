@@ -6,12 +6,13 @@ use phasor::Phasor;
 use crate::shared::{delay_line::DelayLine, delta::Delta};
 
 const VOICES: usize = 4;
+const TARGET_FREQUENCY: f32 = 8.;
 
 pub struct Grains {
   grain_delay_line: DelayLine,
   grains: Vec<Grain>,
   phasor: Phasor,
-  delta: Delta,
+  delta: Delta
 }
 
 impl Grains {
@@ -28,9 +29,9 @@ impl Grains {
     let speed = Self::pitch_to_speed(pitch);
     match freq {
       Some(freq) => {
-        let grain_freq = Self::get_grain_freq(freq, speed);
-        let phasor = self.phasor.process(grain_freq * VOICES as f32);
-        let trigger = self.delta.process(phasor) < 0.;
+        let grain_freq = Self::get_grain_freq(freq);
+        let phasor = self.phasor.process(grain_freq * speed * VOICES as f32);
+        let trigger = self.delta.process(phasor).abs() > 0.5;
 
         if trigger {
           self.set_grain_parameters(grain_freq, speed);
@@ -45,7 +46,7 @@ impl Grains {
       .iter_mut()
       .filter(|grain| !grain.is_free())
       .map(|grain| grain.process(grain_delay_line, speed))
-      .sum::<f32>() * (VOICES as f32 / 2.).recip();
+      .sum::<f32>();
 
     self.grain_delay_line.write(input);
 
@@ -68,22 +69,8 @@ impl Grains {
     1. - 2_f32.powf(pitch / 12.)
   }
 
-  fn get_grain_freq(freq: f32, speed: f32) -> f32 {
-    let division = if freq < 160. {
-      freq / 2.
-    } else if freq < 320. {
-      freq / 4.
-    } else if freq < 640. {
-      freq / 8.
-    } else {
-      freq / 16.
-    }.trunc();
-    let grain_freq = freq * speed.abs() / division;
-
-    if grain_freq < 7. {
-      grain_freq * 2.
-    } else {
-      grain_freq
-    }
+  fn get_grain_freq(freq: f32) -> f32 {
+    let divider = ((freq / TARGET_FREQUENCY / 4.).trunc() * 4.).max(4.);
+    freq / divider
   }
 }
