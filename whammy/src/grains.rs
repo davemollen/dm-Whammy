@@ -36,7 +36,7 @@ impl Grains {
         let trigger = self.delta.process(phasor).abs() > 0.5;
 
         if trigger {
-          self.set_grain_parameters(grain_freq, speed);
+          self.set_grain_parameters(grain_freq);
         }
       }
       None => (),
@@ -54,10 +54,10 @@ impl Grains {
     output
   }
   
-  fn set_grain_parameters(&mut self, freq: f32, speed: f32) {
+  fn set_grain_parameters(&mut self, freq: f32) {
     let window_size = 1000. / freq;
 
-    self.grains[self.voice_index].set_parameters(freq, window_size, speed);
+    self.grains[self.voice_index].set_parameters(freq, window_size);
     self.voice_index = (self.voice_index + 1) % 4;
   }
 

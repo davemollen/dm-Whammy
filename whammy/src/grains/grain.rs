@@ -12,7 +12,6 @@ pub struct Grain {
   freq: f32,
   window_size: f32,
   time_ramp: Ramp,
-  time_ramp_max: f32,
 }
 
 impl Grain {
@@ -21,41 +20,25 @@ impl Grain {
       freq: 0.,
       window_size: 0.,
       time_ramp: Ramp::new(sample_rate),
-      time_ramp_max: 1.,
     }
   }
 
-  pub fn is_free(&self) -> bool {
-    self.time_ramp.is_finished()
-  }
+  // pub fn is_free(&self) -> bool {
+  //   self.time_ramp.is_finished()
+  // }
 
-  pub fn set_parameters(&mut self, freq: f32, window_size: f32, speed: f32) {
+  pub fn set_parameters(&mut self, freq: f32, window_size: f32) {
     self.freq = freq;
     self.window_size = window_size;
-    self.time_ramp.start(None);
-
-    self.time_ramp_max = (speed * freq).abs() / freq;
+    self.time_ramp.start();
   }
 
   pub fn process(&mut self, grain_delay_line: &mut DelayLine, speed: f32) -> f32 {
-    let time = self.get_time(speed);
-    let window = self.get_window();
+    let ramp = self.time_ramp.process(speed * self.freq);
+    let time = ramp * self.window_size;
+    let window = 0.5 - 0.5 * (ramp * TAU).fast_cos();
 
     let grains_out = grain_delay_line.read(time, Interpolation::Linear);
     grains_out * window
-  }
-
-  fn get_time(&mut self, speed: f32) -> f32 {
-    if self.time_ramp_max == 0. {
-      self.time_ramp.run(self.freq, 0., 1.);
-      0.
-    } else {
-      let ramp_freq = speed * self.freq;
-      self.time_ramp.run(ramp_freq, 0., self.time_ramp_max) * self.window_size
-    }
-  }
-
-  fn get_window(&mut self) -> f32 {
-    0.5 - 0.5 * (self.time_ramp.get_progress() * TAU).fast_cos()
   }
 }
