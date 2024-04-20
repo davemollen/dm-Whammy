@@ -12,16 +12,18 @@ pub struct Grains {
   grain_delay_line: DelayLine,
   grains: Vec<Grain>,
   phasor: Phasor,
-  delta: Delta
+  delta: Delta,
+  voice_index: usize
 }
 
 impl Grains {
   pub fn new(sample_rate: f32) -> Self {
     Self {
       grain_delay_line: DelayLine::new((sample_rate * 1.) as usize, sample_rate),
-      grains: vec![Grain::new(sample_rate); VOICES * 2],
+      grains: vec![Grain::new(sample_rate); VOICES],
       phasor: Phasor::new(sample_rate),
       delta: Delta::new(),
+      voice_index: 0
     }
   }
 
@@ -44,7 +46,6 @@ impl Grains {
     let output = self
       .grains
       .iter_mut()
-      .filter(|grain| !grain.is_free())
       .map(|grain| grain.process(grain_delay_line, speed))
       .sum::<f32>();
 
@@ -56,13 +57,8 @@ impl Grains {
   fn set_grain_parameters(&mut self, freq: f32, speed: f32) {
     let window_size = 1000. / freq;
 
-    let grain = self.grains.iter_mut().find(|grain | grain.is_free());
-    match grain {
-      Some(grain) => {
-        grain.set_parameters(freq, window_size, speed);
-      }
-      None => {}
-    }
+    self.grains[self.voice_index].set_parameters(freq, window_size, speed);
+    self.voice_index = (self.voice_index + 1) % 4;
   }
 
   fn pitch_to_speed(pitch: f32) -> f32 {

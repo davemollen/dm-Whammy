@@ -39,9 +39,6 @@ impl Ramp {
   }
 
   fn keep_between_bounds(&mut self, next_x: f32, min: f32, max: f32) -> f32 {
-    if next_x <= min || next_x >= max {
-      self.is_active = false;
-    }
     let x = next_x.max(min).min(max);
     self.x = Some(x);
     x
@@ -61,15 +58,11 @@ impl Ramp {
   }
 
   pub fn get_x(&mut self, freq: f32, min: f32, max: f32) -> f32 {
-    if self.is_active {
-      let step_size = self.get_step_size(freq);
+    let step_size = self.get_step_size(freq);
 
-      match self.x {
-        None => self.initialize(step_size, min, max),
-        Some(current_x) => self.keep_between_bounds(current_x + step_size, min, max),
-      }
-    } else {
-      self.x.unwrap()
+    match self.x {
+      None => self.initialize(step_size, min, max),
+      Some(current_x) => self.keep_between_bounds(current_x + step_size, min, max),
     }
   }
 
@@ -196,5 +189,21 @@ mod tests {
     assert_approximately_eq(ramp.run(-1., 0., 1.), 0.);
     assert_approximately_eq(ramp.get_progress(), 0.);
     assert!(ramp.is_finished());
+  }
+
+  #[test]
+  fn restart_ramp() {
+    let mut ramp = Ramp::new(10.);
+    ramp.start(None);
+    assert_approximately_eq(ramp.run(1., 0., 1.), 0.);
+    assert_approximately_eq(ramp.get_progress(), 0.);
+    assert_approximately_eq(ramp.run(1., 0., 1.), 0.1);
+    assert_approximately_eq(ramp.get_progress(), 0.1);
+    assert_approximately_eq(ramp.run(1., 0., 1.), 0.2);
+    assert_approximately_eq(ramp.get_progress(), 0.2);
+    ramp.start(None);
+    assert_approximately_eq(ramp.get_progress(), 0.);
+    assert_approximately_eq(ramp.run(1., 0., 1.), 0.);
+    assert_approximately_eq(ramp.get_progress(), 0.);
   }
 }
