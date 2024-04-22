@@ -15,17 +15,17 @@ pub struct DelayLine {
   buffer: Vec<f32>,
   write_pointer: usize,
   sample_rate: f32,
-  // wrap: usize,
+  wrap: usize,
 }
 
 impl DelayLine {
   pub fn new(length: usize, sample_rate: f32) -> Self {
-    // let size = length.next_power_of_two();
+    let size = length.next_power_of_two();
     Self {
-      buffer: vec![0.0; length],
+      buffer: vec![0.0; size],
       write_pointer: 0,
       sample_rate,
-      // wrap: length - 1,
+      wrap: size - 1,
     }
   }
 
@@ -41,14 +41,14 @@ impl DelayLine {
 
   pub fn write(&mut self, value: f32) {
     self.buffer[self.write_pointer] = value;
-    self.write_pointer = self.wrap(self.write_pointer + 1);
+    self.write_pointer = self.write_pointer + 1 & self.wrap;
   }
 
   fn step_interp(&self, time: f32) -> f32 {
     let read_pointer = (self.write_pointer + self.buffer.len()) as f32 - (self.mstosamps(time) - 0.5).max(1.);
     let index = read_pointer.trunc() as usize;
 
-    self.buffer[self.wrap(index)]
+    self.buffer[index + 1 & self.wrap]
   }
 
   fn linear_interp(&self, time: f32) -> f32 {
@@ -57,8 +57,8 @@ impl DelayLine {
     let mix = read_pointer - rounded_read_pointer;
     let index = rounded_read_pointer as usize;
 
-    let x = self.buffer[self.wrap(index)];
-    let y = self.buffer[self.wrap(index + 1)];
+    let x = self.buffer[index & self.wrap];
+    let y = self.buffer[index + 1 & self.wrap];
     x * (1. - mix) + y * mix
   }
 
@@ -69,8 +69,8 @@ impl DelayLine {
     let index = rounded_read_pointer as usize;
 
     let cosine_mix = (1. - (mix * PI).cos()) / 2.;
-    let x = self.buffer[self.wrap(index)];
-    let y = self.buffer[self.wrap(index + 1)];
+    let x = self.buffer[index & self.wrap];
+    let y = self.buffer[index + 1 & self.wrap];
     x * (1. - cosine_mix) + y * cosine_mix
   }
 
@@ -80,10 +80,10 @@ impl DelayLine {
     let mix = read_pointer - rounded_read_pointer;
     let index = rounded_read_pointer as usize;
 
-    let w = self.buffer[self.wrap(index)];
-    let x = self.buffer[self.wrap(index + 1)];
-    let y = self.buffer[self.wrap(index + 2)];
-    let z = self.buffer[self.wrap(index + 3)];
+    let w = self.buffer[index & self.wrap];
+    let x = self.buffer[index + 1 & self.wrap];
+    let y = self.buffer[index + 2 & self.wrap];
+    let z = self.buffer[index + 3 & self.wrap];
 
     let a1 = 1. + mix;
     let aa = mix * a1;
@@ -103,10 +103,10 @@ impl DelayLine {
     let mix = read_pointer - rounded_read_pointer;
     let index = rounded_read_pointer as usize;
 
-    let w = self.buffer[self.wrap(index)];
-    let x = self.buffer[self.wrap(index + 1)];
-    let y = self.buffer[self.wrap(index + 2)];
-    let z = self.buffer[self.wrap(index + 3)];
+    let w = self.buffer[index & self.wrap];
+    let x = self.buffer[index + 1 & self.wrap];
+    let y = self.buffer[index + 2 & self.wrap];
+    let z = self.buffer[index + 3 & self.wrap];
 
     let c0 = x;
     let c1 = (0.5) * (y - w);
@@ -117,14 +117,5 @@ impl DelayLine {
 
   fn mstosamps(&self, time: f32) -> f32 {
     time * 0.001 * self.sample_rate
-  }
-
-  fn wrap(&self, index: usize) -> usize {
-    let buffer_len = self.buffer.len();
-    if index >= buffer_len {
-      index - buffer_len
-    } else {
-      index
-    }
   }
 }

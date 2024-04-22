@@ -38,7 +38,7 @@ impl Grain {
     let time = ramp * self.window_size;
     let window = 0.5 - 0.5 * (ramp * TAU).fast_cos();
 
-    let grains_out = grain_delay_line.read(time, Interpolation::Linear);
+    let grains_out = grain_delay_line.read(time, Interpolation::Spline);
     grains_out * window
   }
 }
