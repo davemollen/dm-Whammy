@@ -27,14 +27,14 @@ impl Grain {
   //   self.time_ramp.is_finished()
   // }
 
-  pub fn set_parameters(&mut self, freq: f32, window_size: f32) {
+  pub fn set_parameters(&mut self, freq: f32) {
     self.freq = freq;
-    self.window_size = window_size;
+    self.window_size = 1000. / freq;
     self.time_ramp.start();
   }
 
   pub fn process(&mut self, grain_delay_line: &mut DelayLine, speed: f32) -> f32 {
-    let ramp = self.time_ramp.process(speed * self.freq);
+    let ramp = self.time_ramp.process(self.freq * speed);
     let time = ramp * self.window_size;
     let window = 0.5 - 0.5 * (ramp * TAU).fast_cos();
 

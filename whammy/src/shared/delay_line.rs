@@ -27,7 +27,7 @@ impl DelayLine {
   }
 
   pub fn read(&mut self, time: f32, interp: Interpolation) -> f32 {
-    let read_pointer = (self.write_pointer + self.buffer.len()) as f32 - self.mstosamps(time);
+    let read_pointer = (self.write_pointer + self.buffer.len() - 1) as f32 - self.mstosamps(time);
     let rounded_read_pointer = read_pointer.trunc();
     let mix = read_pointer - rounded_read_pointer;
     let index = rounded_read_pointer as usize;
@@ -110,7 +110,7 @@ impl DelayLine {
 
 #[cfg(test)]
 mod tests {
-  use super::DelayLine;
+  use super::{DelayLine, Interpolation};
 
   #[test]
   fn step_interp() {
@@ -150,5 +150,38 @@ mod tests {
     assert_eq!(delay_line.cubic_interp(3, 1.), 1.);
     assert_eq!(delay_line.cubic_interp(4, 0.), 1.);
     assert_eq!(delay_line.cubic_interp(4, 1.), 0.75);
+  }
+
+  #[test]
+  fn read() {
+    let mut delay_line = DelayLine::new(4, 1000.);
+    delay_line.write(0.1);
+    delay_line.write(0.2);
+    delay_line.write(0.3);
+    delay_line.write(0.4);
+
+    assert_eq!(delay_line.read(0., Interpolation::Linear), 0.4);
+    assert_eq!(delay_line.read(1., Interpolation::Linear), 0.3);
+    assert_eq!(delay_line.read(2., Interpolation::Linear), 0.2);
+    assert_eq!(delay_line.read(3., Interpolation::Linear), 0.1);
+  }
+
+  #[test]
+  fn cubic_read() {
+    let mut delay_line = DelayLine::new(8, 1000.);
+    delay_line.write(0.1);
+    delay_line.write(0.2);
+    delay_line.write(0.3);
+    delay_line.write(0.4);
+    delay_line.write(0.5);
+    delay_line.write(0.6);
+    delay_line.write(0.7);
+    delay_line.write(0.8);
+
+    assert_eq!(delay_line.read(0., Interpolation::Cubic), 0.8);
+    assert_eq!(delay_line.read(1., Interpolation::Cubic), 0.7);
+    assert_eq!(delay_line.read(4., Interpolation::Cubic), 0.4);
+    assert_eq!(delay_line.read(4.5, Interpolation::Cubic), 0.35);
+    assert_eq!(delay_line.read(5.0, Interpolation::Cubic), 0.3);
   }
 }
