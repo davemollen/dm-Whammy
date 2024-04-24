@@ -19,13 +19,18 @@ impl SwitchAndRamp {
   }
 
   pub fn process(&mut self, input: f32, trigger: bool) -> f32 {
-    if trigger {
-      self.env = self.env - (input - self.last_input);
-    } else { 
-      self.env = self.env * self.coefficient;
+    if self.env.is_subnormal() && !trigger {
+      input
+    } else {  
+      self.env = if trigger {
+        self.env - (input - self.last_input)
+      } else { 
+        self.env * self.coefficient
+      };
+      
+      self.last_input = input;
+      input + self.env
     }
 
-    self.last_input = input;
-    input + self.env
   }
 }
