@@ -2,6 +2,8 @@ use std::f32::consts::PI;
 
 use crate::shared::float_ext::FloatExt;
 
+const DIFFERENCE_THRESHOLD: f32 = 0.001;
+
 #[derive(Clone)]
 pub struct SwitchAndRamp {
   trigger: bool,
@@ -24,11 +26,15 @@ impl SwitchAndRamp {
     self.trigger = true;
   }
 
-  // TODO: check if can prevent a trigger when (input - self.last_input) is small
   pub fn process(&mut self, input: f32) -> f32 {
     self.env = if self.trigger {
       self.trigger = false;
-      self.env - (input - self.last_input)
+      let difference = input - self.last_input;
+      if difference.abs() > DIFFERENCE_THRESHOLD {
+        self.env - difference
+      } else {
+        0.
+      }
     } else if self.env.is_subnormal() {
       0.
     } else { 

@@ -9,7 +9,7 @@ use crate::shared::{delay_line::DelayLine, delta::Delta};
 
 // VOICES needs to be a power of 2
 const VOICES: usize = 4;
-const TARGET_FREQUENCY: f32 = 12.;
+const TARGET_FREQUENCY: f32 = 16.;
 
 pub struct Grains {
   grain_delay_line: DelayLine,
