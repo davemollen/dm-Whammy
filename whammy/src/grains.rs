@@ -1,7 +1,9 @@
 mod grain;
-use grain::Grain;
 mod phasor;
-use phasor::Phasor;
+use {
+  grain::Grain,
+  phasor::Phasor,
+};
 
 use crate::shared::{delay_line::DelayLine, delta::Delta};
 
@@ -14,7 +16,7 @@ pub struct Grains {
   grains: Vec<Grain>,
   phasor: Phasor,
   delta: Delta,
-  voice_index: usize
+  voice_index: usize,
 }
 
 impl Grains {
