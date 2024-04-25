@@ -12,7 +12,7 @@ pub struct PitchDetector {
   filter: OnePoleFilter,
   delta: Delta,
   counter: f32,
-  frequency: Option<f32>,
+  frequency: f32,
 }
 
 impl PitchDetector {
@@ -22,11 +22,11 @@ impl PitchDetector {
       filter: OnePoleFilter::new(sample_rate),
       delta: Delta::new(),
       counter: 0.,
-      frequency: None,
+      frequency: 0.,
     }
   }
 
-  pub fn get_frequency(&mut self, input: f32) -> Option<f32> {
+  pub fn get_frequency(&mut self, input: f32) -> f32 {
     self.counter += 1.;
 
     let filtered = self.filter.process(input, 20., Mode::Hertz);
@@ -34,7 +34,7 @@ impl PitchDetector {
     if zero_cross {
       let frequency = self.sample_rate / self.counter;
       if frequency > MIN_FREQ && frequency < MAX_FREQ {
-        self.frequency = Some(frequency);
+        self.frequency = frequency;
       }
       self.counter = 0.;
     }
