@@ -171,6 +171,6 @@
 
 /* = KNOBS
 ================================================ */
-.mod-pedal-boxy{{{cns}}} .mod-control-group.mod-black .mod-knob .mod-knob-image {
-    background-image:url(/resources/knobs/boxy/black.png{{{ns}}});
+.mod-pedal-boxy{{{cns}}} .mod-control-group.mod-silver .mod-knob .mod-knob-image {
+    background-image:url(/resources/knobs/boxy/silver.png{{{ns}}});
 }

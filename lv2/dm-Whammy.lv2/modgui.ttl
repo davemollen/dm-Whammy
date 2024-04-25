@@ -11,11 +11,19 @@
         modgui:brand "DM" ;
         modgui:label "Whammy" ;
         modgui:model "boxy" ;
-        modgui:panel "1-knob" ;
+        modgui:panel "3-knobs" ;
         modgui:color "red" ;
-        modgui:knob "black" ;
+        modgui:knob "silver" ;
         modgui:port [
             lv2:index 0 ;
+            lv2:symbol "dry" ;
+            lv2:name "Dry" ;
+        ] , [
+            lv2:index 1 ;
+            lv2:symbol "wet" ;
+            lv2:name "Wet" ;
+        ] , [
+            lv2:index 2 ;
             lv2:symbol "pitch" ;
             lv2:name "Pitch" ;
         ] ;

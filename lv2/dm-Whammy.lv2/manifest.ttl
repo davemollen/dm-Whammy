@@ -4,6 +4,4 @@
 <https://github.com/davemollen/dm-Whammy>
     a lv2:Plugin ;
     lv2:binary <libdm_whammy.so> ;
-    rdfs:seeAlso <dm-Whammy.ttl>  .
-<https://github.com/davemollen/dm-Whammy> rdfs:seeAlso <modgui.ttl> .
-<https://github.com/davemollen/dm-Whammy> rdfs:seeAlso <modgui.ttl> .
+    rdfs:seeAlso <dm-Whammy.ttl>  .<https://github.com/davemollen/dm-Whammy> rdfs:seeAlso <modgui.ttl> .

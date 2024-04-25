@@ -66,10 +66,12 @@ impl Plugin for DmWhammy {
     _context: &mut impl ProcessContext<Self>,
   ) -> ProcessStatus {
     let pitch = self.params.pitch.value();
+    let dry_level = self.params.dry.value();
+    let wet_level = self.params.wet.value();
 
     buffer.iter_samples().for_each(|mut channel_samples| {
       let sample = channel_samples.iter_mut().next().unwrap();
-      let whammy_output = self.whammy.process(*sample, pitch);
+      let whammy_output = self.whammy.process(*sample, pitch, dry_level, wet_level);
       *sample = whammy_output;
     });
     ProcessStatus::Normal

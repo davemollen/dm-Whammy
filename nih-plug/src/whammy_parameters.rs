@@ -13,6 +13,12 @@ pub struct WhammyParameters {
   /// restored.
   #[persist = "editor-state"]
   pub editor_state: Arc<ViziaState>,
+  
+  #[id = "dry"]
+  pub dry: FloatParam,
+  
+  #[id = "wet"]
+  pub wet: FloatParam,
 
   #[id = "pitch"]
   pub pitch: FloatParam,
@@ -22,6 +28,44 @@ impl Default for WhammyParameters {
   fn default() -> Self {
     Self {
       editor_state: editor::default_state(),
+
+      dry: FloatParam::new(
+        "Dry",
+        0.,
+        FloatRange::SymmetricalSkewed {
+          min: -70.,
+          max: 6.,
+          factor: 0.333333,
+          center: 0.
+        },
+      )
+      .with_unit(" dB")
+      .with_value_to_string(Arc::new(move |value| {
+        if value == -70. {
+          "-inf".to_string()
+        } else {
+          format!("{:.2}", value)
+        }
+      })),
+      
+      wet: FloatParam::new(
+        "Wet",
+        0.,
+        FloatRange::SymmetricalSkewed {
+          min: -70.,
+          max: 6.,
+          factor: 0.333333,
+          center: 0.
+        },
+      )
+      .with_unit(" dB")
+      .with_value_to_string(Arc::new(move |value| {
+        if value == -70. {
+          "-inf".to_string()
+        } else {
+          format!("{:.2}", value)
+        }
+      })),
 
       pitch: FloatParam::new(
         "Pitch",

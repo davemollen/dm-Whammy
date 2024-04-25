@@ -24,6 +24,24 @@ A pitchshift effect written in Rust.
 	lv2:port [
 		a lv2:InputPort, lv2:ControlPort ;
 		lv2:index 0 ;
+		lv2:symbol "dry" ;
+		lv2:name "Dry" ;
+		lv2:default 0.0 ;
+		lv2:minimum -70.0 ;
+		lv2:maximum 6.0 ;
+		units:unit units:db
+	], [
+		a lv2:InputPort, lv2:ControlPort ;
+		lv2:index 1 ;
+		lv2:symbol "wet" ;
+		lv2:name "Wet" ;
+		lv2:default 0.0 ;
+		lv2:minimum -70.0 ;
+		lv2:maximum 6.0 ;
+		units:unit units:db
+	], [
+		a lv2:InputPort, lv2:ControlPort ;
+		lv2:index 2 ;
 		lv2:symbol "pitch" ;
 		lv2:name "Pitch" ;
 		lv2:default 0.0 ;
@@ -32,12 +50,12 @@ A pitchshift effect written in Rust.
 		units:unit units:semitone12TET
 	], [
 		a lv2:AudioPort, lv2:InputPort ;
-		lv2:index 1 ;
+		lv2:index 3 ;
 		lv2:symbol "in" ;
 		lv2:name "In"
 	] , [
 		a lv2:AudioPort, lv2:OutputPort ;
-		lv2:index 2 ;
+		lv2:index 4 ;
 		lv2:symbol "out" ;
 		lv2:name "Out"
 	] .
