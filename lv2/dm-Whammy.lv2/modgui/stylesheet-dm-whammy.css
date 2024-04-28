@@ -131,21 +131,18 @@
     text-transform:uppercase;
 }
 
-/* ONE KNOB */
-.mod-pedal-boxy{{{cns}}}.mod-one-knob .mod-control-group .mod-knob .mod-knob-image {
-    background-image:url(/resources/knobs/boxy/boxy.png{{{ns}}});
+/* THREE AND HIGHER KNOBS */
+.mod-pedal-boxy{{{cns}}}.mod-three-knobs .mod-control-group .mod-knob .mod-knob-image {
+    background-image:url(/resources/knobs/lata/lata.png{{{ns}}});
     background-repeat:no-repeat;
-    background-size:auto 98px;
-    height:98px;
-    width:98px;
+    background-size:auto 60px;
+    height:60px;
+    width:60px;
     margin:0 auto;
 }
-.mod-pedal-boxy{{{cns}}}.mod-one-knob .mod-control-group .mod-knob > span.mod-knob-title {
-    font-size:15px;
-    height:15px;
-}
-.mod-pedal-boxy{{{cns}}}.mod-one-knob .mod-control-group .mod-knob {
-    height:115px;
+.mod-pedal-boxy{{{cns}}}.mod-three-knobs .mod-control-group .mod-knob {
+    display:inline-block;
+    height:73px;
 }
 
 
