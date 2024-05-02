@@ -1,11 +1,13 @@
 use nih_plug::prelude::{Param, ParamPtr};
 use nih_plug_vizia::vizia::{
-  context::{Context, EmitContext}, 
-  view::Handle, 
-  views::{VStack, Label, Knob, Textbox, TextEvent}, 
-  prelude::Units::{Stretch, Pixels}, modifiers::{TextModifiers, LayoutModifiers, ActionModifiers}, style::FontWeightKeyword, 
-  layout::Units::{Auto, self}, 
-  binding::{Lens, LensExt}
+  binding::{Lens, LensExt},
+  context::{Context, EmitContext},
+  layout::Units::{self, Auto},
+  modifiers::{ActionModifiers, LayoutModifiers, TextModifiers},
+  prelude::Units::{Pixels, Stretch},
+  style::FontWeightKeyword,
+  view::Handle,
+  views::{Knob, Label, TextEvent, Textbox, VStack},
 };
 use std::any::Any;
 
@@ -20,7 +22,7 @@ impl ParamKnobSize {
     match self {
       ParamKnobSize::Small => Pixels(32.),
       ParamKnobSize::Regular => Pixels(44.),
-      ParamKnobSize::Large => Pixels(68.)
+      ParamKnobSize::Large => Pixels(68.),
     }
   }
 }
@@ -35,8 +37,8 @@ impl ParamKnob {
     param_ptr: ParamPtr,
     params_to_param: F,
     on_change: C,
-    size: ParamKnobSize
-  ) -> Handle<'a, VStack> 
+    size: ParamKnobSize,
+  ) -> Handle<'a, VStack>
   where
     L: 'static + Lens + Copy + Send + Sync,
     <L as Lens>::Source: 'static,
@@ -80,12 +82,13 @@ impl ParamKnob {
         cx.emit(TextEvent::EndEdit);
 
         if success {
-          let val =
-            lens.map(move |p| {
-              params_to_param(p).string_to_normalized_value(&text)
-          }).get(cx).unwrap();
-          
-          cx.emit(on_change(param_ptr, val));
+          let val = lens
+            .map(move |p| params_to_param(p).string_to_normalized_value(&text))
+            .get(cx);
+          match val {
+            Some(val) => cx.emit(on_change(param_ptr, val)),
+            _ => (),
+          };
         }
       })
       .font_size(12.0)
