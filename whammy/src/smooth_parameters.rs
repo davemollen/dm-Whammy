@@ -1,5 +1,4 @@
-mod ramp_smooth;
-use ramp_smooth::RampSmooth;
+use crate::shared::ramp_smooth::RampSmooth;
 
 const PITCH_RAMP_TIME: f32 = 10.;
 const GAIN_RAMP_TIME: f32 = 50.;

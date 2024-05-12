@@ -4,6 +4,7 @@ pub mod shared {
   pub mod delay_line;
   pub mod delta;
   pub mod float_ext;
+  pub mod ramp_smooth;
 }
 mod grains;
 use grains::Grains;
@@ -30,7 +31,10 @@ impl Whammy {
   }
 
   pub fn process(&mut self, input: f32, pitch: f32, dry_level: f32, wet_level: f32) -> f32 {
-    let (pitch, dry_gain, wet_gain) = self.smooth_parameters.process(pitch, Self::dbtoa(dry_level), Self::dbtoa(wet_level));
+    let (pitch, dry_gain, wet_gain) =
+      self
+        .smooth_parameters
+        .process(pitch, Self::dbtoa(dry_level), Self::dbtoa(wet_level));
     let freq = self.pitch_detector.get_frequency(input);
     let grains_out = self.grains.process(input, pitch, freq);
 
