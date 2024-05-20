@@ -1,51 +1,21 @@
-use std::f32::consts::PI;
-
-use crate::shared::float_ext::FloatExt;
-
-#[allow(dead_code)]
-pub enum Mode {
-  Linear,
-  Hertz,
-}
+use std::f32::consts::TAU;
 
 pub struct OnePoleFilter {
-  sample_rate: f32,
+  b1: f32,
   z: f32,
 }
 
 impl OnePoleFilter {
-  pub fn new(sample_rate: f32) -> Self {
-    Self { sample_rate, z: 0. }
-  }
-
-  pub fn process(&mut self, input: f32, cutoff_freq: f32, mode: Mode) -> f32 {
-    if (input - self.z).is_subnormal() {
-      input
-    } else {
-      self.apply_filter(input, cutoff_freq, mode)
+  pub fn new(sample_rate: f32, cutoff_freq: f32) -> Self {
+    Self {
+      b1: (-TAU * cutoff_freq * sample_rate.recip()).exp(),
+      z: 0.,
     }
   }
 
-  fn convert_linear_input_to_coefficient(&self, r: f32) -> f32 {
-    (1. - r) / 44100. * self.sample_rate
-  }
-
-  fn convert_hertz_to_coefficient(&self, freq: f32) -> f32 {
-    let coef = (freq * 2. * PI / self.sample_rate).fast_sin();
-    coef.clamp(0., 1.)
-  }
-
-  fn mix(&self, a: f32, b: f32, interp: f32) -> f32 {
-    a * (1. - interp) + b * interp
-  }
-
-  fn apply_filter(&mut self, input: f32, cutoff_freq: f32, mode: Mode) -> f32 {
-    let coefficient = match mode {
-      Mode::Linear => self.convert_linear_input_to_coefficient(cutoff_freq),
-      Mode::Hertz => self.convert_hertz_to_coefficient(cutoff_freq),
-    };
-    let output = self.mix(self.z, input, coefficient);
-    self.z = output;
-    output
+  pub fn process(&mut self, input: f32) -> f32 {
+    let a0 = 1.0 - self.b1;
+    self.z = input * a0 + self.z * self.b1;
+    self.z
   }
 }

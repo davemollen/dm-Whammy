@@ -1,5 +1,5 @@
 mod one_pole_filter;
-use one_pole_filter::{Mode, OnePoleFilter};
+use one_pole_filter::OnePoleFilter;
 
 use crate::shared::delta::Delta;
 
@@ -19,7 +19,7 @@ impl PitchDetector {
   pub fn new(sample_rate: f32) -> Self {
     Self {
       sample_rate,
-      filter: OnePoleFilter::new(sample_rate),
+      filter: OnePoleFilter::new(sample_rate, 20.),
       delta: Delta::new(),
       counter: 0.,
       frequency: 0.,
@@ -29,10 +29,10 @@ impl PitchDetector {
   pub fn get_frequency(&mut self, input: f32) -> f32 {
     self.counter += 1.;
 
-    let filtered = self.filter.process(input, 20., Mode::Hertz);
+    let filtered = self.filter.process(input);
     let zero_cross = self.delta.process(if filtered > 0. { 1. } else { 0. }) > 0.;
     if zero_cross {
-      let frequency = self.sample_rate / self.counter;
+      let frequency = self.sample_rate * self.counter.recip();
       if frequency > MIN_FREQ && frequency < MAX_FREQ {
         self.frequency = frequency;
       }
