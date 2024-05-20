@@ -50,10 +50,10 @@ impl Plugin for DmWhammy {
   // iterates over.
   fn run(&mut self, ports: &mut Ports, _features: &mut (), _sample_count: u32) {
     let (dry_level, wet_level) = self.get_dry_wet_levels(ports);
-    let pitch = *ports.pitch;
+    let speed = 1. - 2_f32.powf(*ports.pitch / 12.);
 
     for (input, output) in ports.input.iter().zip(ports.output.iter_mut()) {
-      *output = self.whammy.process(*input, pitch, dry_level, wet_level);
+      *output = self.whammy.process(*input, speed, dry_level, wet_level);
     }
   }
 }

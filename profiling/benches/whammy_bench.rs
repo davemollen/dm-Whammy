@@ -13,10 +13,13 @@ fn whammy_bench(c: &mut Criterion) {
   let mut whammy = Whammy::new(44100.);
   let signal_stream = generate_stereo_signal_stream(44100);
 
+  let pitch = 12.;
+  let speed = 1. - 2_f32.powf(pitch / 12.);
+
   c.bench_function("whammy", |b| {
     b.iter(|| {
       for input in &signal_stream {
-        whammy.process(*input, 12., 1., 1.);
+        whammy.process(*input, speed, 1., 1.);
       }
     })
   });

@@ -30,10 +30,10 @@ impl Whammy {
     }
   }
 
-  pub fn process(&mut self, input: f32, pitch: f32, dry_level: f32, wet_level: f32) -> f32 {
-    let (pitch, dry_gain, wet_gain) = self.smooth_parameters.process(pitch, dry_level, wet_level);
+  pub fn process(&mut self, input: f32, speed: f32, dry_level: f32, wet_level: f32) -> f32 {
+    let (speed, dry_gain, wet_gain) = self.smooth_parameters.process(speed, dry_level, wet_level);
     let freq = self.pitch_detector.get_frequency(input);
-    let grains_out = self.grains.process(input, pitch, freq);
+    let grains_out = self.grains.process(input, speed, freq);
 
     input * dry_gain + grains_out * wet_gain
   }

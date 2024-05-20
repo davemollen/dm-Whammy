@@ -29,8 +29,7 @@ impl Grains {
     }
   }
 
-  pub fn process(&mut self, input: f32, pitch: f32, detected_freq: f32) -> f32 {
-    let speed = Self::pitch_to_speed(pitch);
+  pub fn process(&mut self, input: f32, speed: f32, detected_freq: f32) -> f32 {
     let fade_a = self.xfade.process(if speed == 0. { 1. } else { 0. });
     let fade_b = 1. - fade_a;
 
@@ -52,10 +51,6 @@ impl Grains {
 
       input * fade_a + output * fade_b
     }
-  }
-
-  fn pitch_to_speed(pitch: f32) -> f32 {
-    1. - 2_f32.powf(pitch / 12.)
   }
 
   fn get_grain_freq(freq: f32) -> f32 {
