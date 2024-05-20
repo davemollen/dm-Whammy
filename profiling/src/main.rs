@@ -7,11 +7,12 @@ fn generate_signal() -> f32 {
 fn main() {
   let mut whammy = Whammy::new(44100.);
 
-  let pitch = 12.;
-  let speed = 1. - 2_f32.powf(pitch / 12.);
+  let params_to_smooth = whammy.params_to_smooth(12., 0., 0.);
+  whammy.initialize_params_to_smooth(params_to_smooth);
+  let (speed, dry_level, wet_level) = params_to_smooth;
 
   loop {
     let input = generate_signal();
-    whammy.process(input, speed, 1., 1.);
+    whammy.process(input, speed, dry_level, wet_level);
   }
 }

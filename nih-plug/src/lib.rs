@@ -1,6 +1,6 @@
 use nih_plug::prelude::*;
 use std::sync::Arc;
-use whammy::{FloatExt, Whammy};
+use whammy::Whammy;
 mod whammy_parameters;
 use whammy_parameters::WhammyParameters;
 mod editor;
@@ -16,23 +16,6 @@ impl Default for DmWhammy {
     Self {
       params: params.clone(),
       whammy: Whammy::new(44100.),
-    }
-  }
-}
-
-impl DmWhammy {
-  pub fn get_dry_wet_levels(&self) -> (f32, f32) {
-    (
-      Self::dbtoa(self.params.dry.value()),
-      Self::dbtoa(self.params.wet.value()),
-    )
-  }
-
-  fn dbtoa(level: f32) -> f32 {
-    if level <= -70. {
-      0.
-    } else {
-      level.dbtoa()
     }
   }
 }
@@ -73,6 +56,12 @@ impl Plugin for DmWhammy {
     _context: &mut impl InitContext<Self>,
   ) -> bool {
     self.whammy = Whammy::new(buffer_config.sample_rate);
+    let params_to_smooth = self.whammy.params_to_smooth(
+      self.params.pitch.value(),
+      self.params.dry.value(),
+      self.params.wet.value(),
+    );
+    self.whammy.initialize_params_to_smooth(params_to_smooth);
     true
   }
 
@@ -82,8 +71,11 @@ impl Plugin for DmWhammy {
     _aux: &mut AuxiliaryBuffers,
     _context: &mut impl ProcessContext<Self>,
   ) -> ProcessStatus {
-    let (dry_level, wet_level) = self.get_dry_wet_levels();
-    let speed = 1. - 2_f32.powf(self.params.pitch.value() / 12.);
+    let (speed, dry_level, wet_level) = self.whammy.params_to_smooth(
+      self.params.pitch.value(),
+      self.params.dry.value(),
+      self.params.wet.value(),
+    );
 
     buffer.iter_samples().for_each(|mut channel_samples| {
       let sample = channel_samples.iter_mut().next().unwrap();

@@ -1,7 +1,7 @@
 extern crate lv2;
 extern crate whammy;
 use lv2::prelude::*;
-use whammy::{FloatExt, Whammy};
+use whammy::Whammy;
 
 #[derive(PortCollection)]
 struct Ports {
@@ -15,20 +15,7 @@ struct Ports {
 #[uri("https://github.com/davemollen/dm-Whammy")]
 struct DmWhammy {
   whammy: Whammy,
-}
-
-impl DmWhammy {
-  pub fn get_dry_wet_levels(&self, ports: &mut Ports) -> (f32, f32) {
-    (Self::dbtoa(*ports.dry), Self::dbtoa(*ports.wet))
-  }
-
-  fn dbtoa(level: f32) -> f32 {
-    if level <= -70. {
-      0.
-    } else {
-      level.dbtoa()
-    }
-  }
+  is_active: bool,
 }
 
 impl Plugin for DmWhammy {
@@ -43,14 +30,22 @@ impl Plugin for DmWhammy {
   fn new(_plugin_info: &PluginInfo, _features: &mut ()) -> Option<Self> {
     Some(Self {
       whammy: Whammy::new(_plugin_info.sample_rate() as f32),
+      is_active: false,
     })
   }
 
   // Process a chunk of audio. The audio ports are dereferenced to slices, which the plugin
   // iterates over.
   fn run(&mut self, ports: &mut Ports, _features: &mut (), _sample_count: u32) {
-    let (dry_level, wet_level) = self.get_dry_wet_levels(ports);
-    let speed = 1. - 2_f32.powf(*ports.pitch / 12.);
+    let params_to_smooth = self
+      .whammy
+      .params_to_smooth(*ports.pitch, *ports.dry, *ports.wet);
+    let (speed, dry_level, wet_level) = params_to_smooth;
+
+    if !self.is_active {
+      self.whammy.initialize_params_to_smooth(params_to_smooth);
+      self.is_active = true;
+    }
 
     for (input, output) in ports.input.iter().zip(ports.output.iter_mut()) {
       *output = self.whammy.process(*input, speed, dry_level, wet_level);

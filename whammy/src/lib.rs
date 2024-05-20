@@ -1,5 +1,4 @@
 mod pitch_detector;
-use pitch_detector::PitchDetector;
 pub mod shared {
   pub mod delay_line;
   pub mod delta;
@@ -7,10 +6,11 @@ pub mod shared {
   pub mod ramp_smooth;
 }
 mod grains;
-use grains::Grains;
 mod smooth_parameters;
-pub use shared::float_ext::FloatExt;
-use smooth_parameters::SmoothParameters;
+use {
+  grains::Grains, pitch_detector::PitchDetector, shared::float_ext::FloatExt,
+  smooth_parameters::SmoothParameters,
+};
 
 pub const MIN_PITCH: f32 = -24.;
 pub const MAX_PITCH: f32 = 24.;
@@ -30,11 +30,31 @@ impl Whammy {
     }
   }
 
+  pub fn params_to_smooth(&self, pitch: f32, dry: f32, wet: f32) -> (f32, f32, f32) {
+    (
+      1. - 2_f32.powf(pitch / 12.),
+      Self::dbtoa(dry),
+      Self::dbtoa(wet),
+    )
+  }
+
+  pub fn initialize_params_to_smooth(&mut self, params: (f32, f32, f32)) {
+    self.smooth_parameters.initialize(params)
+  }
+
   pub fn process(&mut self, input: f32, speed: f32, dry_level: f32, wet_level: f32) -> f32 {
     let (speed, dry_gain, wet_gain) = self.smooth_parameters.process(speed, dry_level, wet_level);
     let freq = self.pitch_detector.get_frequency(input);
     let grains_out = self.grains.process(input, speed, freq);
 
     input * dry_gain + grains_out * wet_gain
+  }
+
+  fn dbtoa(level: f32) -> f32 {
+    if level <= -70. {
+      0.
+    } else {
+      level.dbtoa()
+    }
   }
 }
