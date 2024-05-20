@@ -1,6 +1,6 @@
 use crate::shared::ramp_smooth::RampSmooth;
 
-const SPEED_RAMP_FREQ: f32 = 100.;
+const SPEED_RAMP_FREQ: f32 = 50.;
 const GAIN_RAMP_TIME: f32 = 20.;
 
 pub struct SmoothParameters {

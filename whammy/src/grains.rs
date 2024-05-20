@@ -21,7 +21,7 @@ impl Grains {
     let grains = (0..VOICES).map(|i| Grain::new(sample_rate, i)).collect();
 
     Self {
-      xfade: RampSmooth::new(sample_rate, 200.),
+      xfade: RampSmooth::new(sample_rate, 100.),
       grain_delay_line: DelayLine::new((sample_rate * 0.2) as usize, sample_rate),
       grains,
       phasor: Phasor::new(sample_rate),
