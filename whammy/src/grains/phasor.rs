@@ -1,16 +1,18 @@
 pub struct Phasor {
-  sample_rate: f32,
+  sample_period: f32,
   x: f32,
 }
 
 impl Phasor {
   pub fn new(sample_rate: f32) -> Self {
-    Self { sample_rate, x: 0. }
+    Self {
+      sample_period: sample_rate.recip(),
+      x: 0.,
+    }
   }
 
   pub fn process(&mut self, freq: f32) -> f32 {
-    let multiplier = 1. / self.sample_rate;
-    self.x = self.wrap(self.x + freq * multiplier);
+    self.x = self.wrap(self.x + freq * self.sample_period);
     self.x
   }
 

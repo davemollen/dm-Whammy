@@ -1,18 +1,18 @@
 #[derive(Clone)]
 pub struct Ramp {
-  sample_rate: f32,
   x: f32,
   trigger: bool,
-  is_active: bool
+  is_active: bool,
+  sample_period: f32,
 }
 
 impl Ramp {
   pub fn new(sample_rate: f32) -> Self {
     Self {
-      sample_rate,
       x: 0.,
       trigger: false,
       is_active: false,
+      sample_period: sample_rate.recip(),
     }
   }
 
@@ -22,7 +22,7 @@ impl Ramp {
   }
 
   pub fn process(&mut self, freq: f32) -> f32 {
-    let step_size = self.sample_rate.recip() * freq;
+    let step_size = self.sample_period * freq;
 
     if self.trigger {
       if freq >= 0. {
@@ -45,10 +45,6 @@ impl Ramp {
 
     self.x
   }
-
-  pub fn is_finished(&self) -> bool {
-    !self.is_active
-  }
 }
 
 #[cfg(test)]
@@ -56,10 +52,7 @@ mod tests {
   use super::Ramp;
 
   fn assert_approximately_eq(left: f32, right: f32) {
-    assert_eq!(
-      (left * 10.).round() / 10.,
-      (right * 10.).round() / 10.
-    )
+    assert_eq!((left * 10.).round() / 10., (right * 10.).round() / 10.)
   }
 
   #[test]
@@ -111,30 +104,5 @@ mod tests {
     assert_approximately_eq(ramp.process(-1.), 0.9);
     ramp.start();
     assert_approximately_eq(ramp.process(1.), 0.);
-  }
-
-  #[test]
-  fn is_finished() {
-    let mut ramp = Ramp::new(10.);
-
-    // forwards
-    ramp.start();
-    for _ in 0..11 {
-      assert!(!ramp.is_finished());
-      ramp.process(1.);
-    }
-    assert!(ramp.is_finished());
-    ramp.process(-1.);
-    assert!(ramp.is_finished());
-
-    // backwards
-    ramp.start();
-    for _ in 0..11 {
-      assert!(!ramp.is_finished());
-      ramp.process(-1.);
-    }
-    assert!(ramp.is_finished());
-    ramp.process(1.);
-    assert!(ramp.is_finished());
   }
 }

@@ -1,6 +1,5 @@
 use crate::FloatExt;
 
-#[derive(Clone, Copy)]
 pub struct RampSmooth {
   prev: f32,
   index: u32,
@@ -32,7 +31,7 @@ impl RampSmooth {
   fn ramp(&mut self, input: f32, difference: f32) -> f32 {
     if input != self.prev {
       self.index = self.ramp_time as u32;
-      self.step_size = difference / self.ramp_time;
+      self.step_size = difference * self.ramp_time.recip();
       self.prev = input;
     }
 

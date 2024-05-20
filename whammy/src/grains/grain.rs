@@ -39,7 +39,7 @@ impl Grain {
     let trigger = self.delta.process(phase).abs() > 0.5;
     if trigger {
       self.freq = freq;
-      self.window_size = 1000. / freq;
+      self.window_size = freq.recip() * 1000.;
       self.time_ramp.start();
     }
 
