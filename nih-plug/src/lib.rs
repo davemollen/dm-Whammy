@@ -1,6 +1,6 @@
 use nih_plug::prelude::*;
 use std::sync::Arc;
-use whammy::Whammy;
+use whammy::{FloatExt, Whammy};
 mod whammy_parameters;
 use whammy_parameters::WhammyParameters;
 mod editor;
@@ -16,6 +16,23 @@ impl Default for DmWhammy {
     Self {
       params: params.clone(),
       whammy: Whammy::new(44100.),
+    }
+  }
+}
+
+impl DmWhammy {
+  pub fn get_dry_wet_levels(&self) -> (f32, f32) {
+    (
+      Self::dbtoa(self.params.dry.value()),
+      Self::dbtoa(self.params.wet.value()),
+    )
+  }
+
+  fn dbtoa(level: f32) -> f32 {
+    if level <= -70. {
+      0.
+    } else {
+      level.dbtoa()
     }
   }
 }
@@ -65,9 +82,8 @@ impl Plugin for DmWhammy {
     _aux: &mut AuxiliaryBuffers,
     _context: &mut impl ProcessContext<Self>,
   ) -> ProcessStatus {
+    let (dry_level, wet_level) = self.get_dry_wet_levels();
     let pitch = self.params.pitch.value();
-    let dry_level = self.params.dry.value();
-    let wet_level = self.params.wet.value();
 
     buffer.iter_samples().for_each(|mut channel_samples| {
       let sample = channel_samples.iter_mut().next().unwrap();

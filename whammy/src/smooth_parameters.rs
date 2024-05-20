@@ -18,11 +18,11 @@ impl SmoothParameters {
     }
   }
 
-  pub fn process(&mut self, pitch: f32, dry_gain: f32, wet_gain: f32) -> (f32, f32, f32) {
+  pub fn process(&mut self, pitch: f32, dry_level: f32, wet_level: f32) -> (f32, f32, f32) {
     (
       self.filters[0].process(pitch),
-      self.filters[1].process(dry_gain),
-      self.filters[2].process(wet_gain),
+      self.filters[1].process(dry_level),
+      self.filters[2].process(wet_level),
     )
   }
 }

@@ -9,7 +9,7 @@ pub mod shared {
 mod grains;
 use grains::Grains;
 mod smooth_parameters;
-use shared::float_ext::FloatExt;
+pub use shared::float_ext::FloatExt;
 use smooth_parameters::SmoothParameters;
 
 pub const MIN_PITCH: f32 = -24.;
@@ -31,21 +31,10 @@ impl Whammy {
   }
 
   pub fn process(&mut self, input: f32, pitch: f32, dry_level: f32, wet_level: f32) -> f32 {
-    let (pitch, dry_gain, wet_gain) =
-      self
-        .smooth_parameters
-        .process(pitch, Self::dbtoa(dry_level), Self::dbtoa(wet_level));
+    let (pitch, dry_gain, wet_gain) = self.smooth_parameters.process(pitch, dry_level, wet_level);
     let freq = self.pitch_detector.get_frequency(input);
     let grains_out = self.grains.process(input, pitch, freq);
 
     input * dry_gain + grains_out * wet_gain
-  }
-
-  fn dbtoa(level: f32) -> f32 {
-    if level <= -70. {
-      0.
-    } else {
-      level.dbtoa()
-    }
   }
 }

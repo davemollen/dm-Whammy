@@ -9,6 +9,6 @@ fn main() {
 
   loop {
     let input = generate_signal();
-    whammy.process(input, 12., 0., 0.);
+    whammy.process(input, 12., 1., 1.);
   }
 }

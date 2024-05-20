@@ -16,7 +16,7 @@ fn whammy_bench(c: &mut Criterion) {
   c.bench_function("whammy", |b| {
     b.iter(|| {
       for input in &signal_stream {
-        whammy.process(*input, 12., 0., 0.);
+        whammy.process(*input, 12., 1., 1.);
       }
     })
   });
