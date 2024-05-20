@@ -21,7 +21,7 @@ impl Grains {
     let grains = (0..VOICES).map(|i| Grain::new(sample_rate, i)).collect();
 
     Self {
-      xfade: RampSmooth::new(sample_rate),
+      xfade: RampSmooth::new(sample_rate, 200.),
       grain_delay_line: DelayLine::new((sample_rate * 0.2) as usize, sample_rate),
       grains,
       phasor: Phasor::new(sample_rate),
@@ -31,7 +31,7 @@ impl Grains {
 
   pub fn process(&mut self, input: f32, pitch: f32, detected_freq: f32) -> f32 {
     let speed = Self::pitch_to_speed(pitch);
-    let fade_a = self.xfade.process(if speed == 0. { 1. } else { 0. }, 5.);
+    let fade_a = self.xfade.process(if speed == 0. { 1. } else { 0. });
     let fade_b = 1. - fade_a;
 
     if fade_a == 1. {
