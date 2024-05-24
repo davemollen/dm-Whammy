@@ -56,12 +56,12 @@ impl Plugin for DmWhammy {
     _context: &mut impl InitContext<Self>,
   ) -> bool {
     self.whammy = Whammy::new(buffer_config.sample_rate);
-    let params_to_smooth = self.whammy.params_to_smooth(
+    let params = self.whammy.get_params(
       self.params.pitch.value(),
       self.params.dry.value(),
       self.params.wet.value(),
     );
-    self.whammy.initialize_params_to_smooth(params_to_smooth);
+    self.whammy.initialize_params(params);
     true
   }
 
@@ -71,7 +71,7 @@ impl Plugin for DmWhammy {
     _aux: &mut AuxiliaryBuffers,
     _context: &mut impl ProcessContext<Self>,
   ) -> ProcessStatus {
-    let (speed, dry_level, wet_level) = self.whammy.params_to_smooth(
+    let (speed, dry_level, wet_level) = self.whammy.get_params(
       self.params.pitch.value(),
       self.params.dry.value(),
       self.params.wet.value(),

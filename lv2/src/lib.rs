@@ -37,13 +37,11 @@ impl Plugin for DmWhammy {
   // Process a chunk of audio. The audio ports are dereferenced to slices, which the plugin
   // iterates over.
   fn run(&mut self, ports: &mut Ports, _features: &mut (), _sample_count: u32) {
-    let params_to_smooth = self
-      .whammy
-      .params_to_smooth(*ports.pitch, *ports.dry, *ports.wet);
-    let (speed, dry_level, wet_level) = params_to_smooth;
+    let params = self.whammy.get_params(*ports.pitch, *ports.dry, *ports.wet);
+    let (speed, dry_level, wet_level) = params;
 
     if !self.is_active {
-      self.whammy.initialize_params_to_smooth(params_to_smooth);
+      self.whammy.initialize_params(params);
       self.is_active = true;
     }
 

@@ -30,7 +30,7 @@ impl Whammy {
     }
   }
 
-  pub fn params_to_smooth(&self, pitch: f32, dry: f32, wet: f32) -> (f32, f32, f32) {
+  pub fn get_params(&self, pitch: f32, dry: f32, wet: f32) -> (f32, f32, f32) {
     (
       1. - 2_f32.powf(pitch / 12.),
       Self::dbtoa(dry),
@@ -38,7 +38,7 @@ impl Whammy {
     )
   }
 
-  pub fn initialize_params_to_smooth(&mut self, params: (f32, f32, f32)) {
+  pub fn initialize_params(&mut self, params: (f32, f32, f32)) {
     self.smooth_parameters.initialize(params)
   }
 
