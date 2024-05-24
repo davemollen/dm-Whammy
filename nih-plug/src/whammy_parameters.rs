@@ -1,7 +1,7 @@
 use nih_plug::prelude::{FloatParam, FloatRange, Params};
 use nih_plug_vizia::ViziaState;
-use whammy::{MAX_PITCH, MIN_PITCH};
 use std::sync::Arc;
+use whammy::{MAX_PITCH, MIN_PITCH};
 mod custom_formatters;
 use custom_formatters::v2s_f32_digits;
 
@@ -13,10 +13,10 @@ pub struct WhammyParameters {
   /// restored.
   #[persist = "editor-state"]
   pub editor_state: Arc<ViziaState>,
-  
+
   #[id = "dry"]
   pub dry: FloatParam,
-  
+
   #[id = "wet"]
   pub wet: FloatParam,
 
@@ -31,12 +31,12 @@ impl Default for WhammyParameters {
 
       dry: FloatParam::new(
         "Dry",
-        0.,
+        -70.,
         FloatRange::SymmetricalSkewed {
           min: -70.,
           max: 6.,
           factor: 0.333333,
-          center: 0.
+          center: 0.,
         },
       )
       .with_unit(" dB")
@@ -47,7 +47,7 @@ impl Default for WhammyParameters {
           format!("{:.2}", value)
         }
       })),
-      
+
       wet: FloatParam::new(
         "Wet",
         0.,
@@ -55,7 +55,7 @@ impl Default for WhammyParameters {
           min: -70.,
           max: 6.,
           factor: 0.333333,
-          center: 0.
+          center: 0.,
         },
       )
       .with_unit(" dB")
