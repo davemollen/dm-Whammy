@@ -1,21 +1,25 @@
-use crate::FloatExt;
+use crate::shared::float_ext::FloatExt;
 
 pub struct RampSmooth {
   prev: f32,
-  index: u32,
+  index: usize,
   step_size: f32,
   z: f32,
-  ramp_time: f32,
+  ramp_time: usize,
+  ramp_factor: f32,
 }
 
 impl RampSmooth {
   pub fn new(sample_rate: f32, freq: f32) -> Self {
+    let ramp_time = (freq.recip() * 1000.).mstosamps(sample_rate);
+
     Self {
       prev: 0.,
       index: 0,
       step_size: 0.,
       z: 0.,
-      ramp_time: (freq.recip() * 1000.).mstosamps(sample_rate),
+      ramp_time: ramp_time as usize,
+      ramp_factor: ramp_time.recip(),
     }
   }
 
@@ -34,8 +38,8 @@ impl RampSmooth {
 
   fn ramp(&mut self, input: f32, difference: f32) -> f32 {
     if input != self.prev {
-      self.index = self.ramp_time as u32;
-      self.step_size = difference * self.ramp_time.recip();
+      self.index = self.ramp_time;
+      self.step_size = difference * self.ramp_factor;
       self.prev = input;
     }
 
