@@ -28,13 +28,27 @@ impl Grain {
     }
   }
 
+  pub fn reset(&mut self, freq: f32, speed: f32) {
+    self.freq = freq;
+    self.window_size = freq.recip() * 1000.;
+    self.time_ramp.jump_to(if speed >= 0. {
+      self.phase_offset
+    } else {
+      1. - self.phase_offset
+    });
+  }
+
   pub fn process(
     &mut self,
     grain_delay_line: &mut DelayLine,
     phasor: f32,
     freq: f32,
     speed: f32,
+    should_reset: bool,
   ) -> f32 {
+    if should_reset {
+      self.reset(freq, speed);
+    }
     let phase = Self::wrap(phasor + self.phase_offset);
     let trigger = self.delta.process(phase).abs() > 0.5;
     if trigger {

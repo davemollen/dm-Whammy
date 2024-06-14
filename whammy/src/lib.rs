@@ -39,7 +39,8 @@ impl Whammy {
   }
 
   pub fn initialize_params(&mut self, params: (f32, f32, f32)) {
-    self.smooth_parameters.initialize(params)
+    self.smooth_parameters.initialize(params);
+    self.grains.initialize(params.0);
   }
 
   pub fn process(&mut self, input: f32, speed: f32, dry_level: f32, wet_level: f32) -> f32 {

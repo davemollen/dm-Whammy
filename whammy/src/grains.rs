@@ -14,6 +14,7 @@ pub struct Grains {
   grains: Vec<Grain>,
   phasor: Phasor,
   gain_correction: f32,
+  should_reset_grains: bool,
 }
 
 impl Grains {
@@ -26,31 +27,49 @@ impl Grains {
       grains,
       phasor: Phasor::new(sample_rate),
       gain_correction: (VOICES as f32 / 2.).recip(),
+      should_reset_grains: false,
     }
   }
 
+  pub fn initialize(&mut self, speed: f32) {
+    self.xfade.initialize(if speed == 0. { 1. } else { 0. });
+  }
+
   pub fn process(&mut self, input: f32, speed: f32, detected_freq: f32) -> f32 {
+    let grain_freq = Self::get_grain_freq(detected_freq);
     let fade_a = self.xfade.process(if speed == 0. { 1. } else { 0. });
     let fade_b = 1. - fade_a;
 
-    if fade_a == 1. {
+    let output = if fade_a == 1. {
+      self.should_reset_grains = true;
+
       input
     } else {
-      let grain_freq = Self::get_grain_freq(detected_freq);
       let phasor = self.phasor.process(grain_freq * speed);
-
       let grain_delay_line = &mut self.grain_delay_line;
-      let output = self
+
+      let grains_out = self
         .grains
         .iter_mut()
-        .map(|grain| grain.process(grain_delay_line, phasor, grain_freq, speed))
+        .map(|grain| {
+          grain.process(
+            grain_delay_line,
+            phasor,
+            grain_freq,
+            speed,
+            self.should_reset_grains,
+          )
+        })
         .sum::<f32>()
         * self.gain_correction;
 
-      self.grain_delay_line.write(input);
+      self.should_reset_grains = false;
+      input * fade_a + grains_out * fade_b
+    };
 
-      input * fade_a + output * fade_b
-    }
+    self.grain_delay_line.write(input);
+
+    output
   }
 
   fn get_grain_freq(freq: f32) -> f32 {

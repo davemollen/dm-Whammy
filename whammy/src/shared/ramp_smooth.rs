@@ -28,16 +28,9 @@ impl RampSmooth {
   }
 
   pub fn process(&mut self, input: f32) -> f32 {
-    if input.is_equal_to(self.z) {
-      input
-    } else {
-      let difference = input - self.z;
-      self.ramp(input, difference)
-    }
-  }
-
-  fn ramp(&mut self, input: f32, difference: f32) -> f32 {
     if input != self.prev {
+      let difference = input - self.z;
+
       self.index = self.ramp_time;
       self.step_size = difference * self.ramp_factor;
       self.prev = input;
@@ -47,6 +40,11 @@ impl RampSmooth {
       self.index -= 1;
       self.z += self.step_size;
     }
+
+    if self.index == 0 {
+      self.z = self.prev;
+    }
+
     self.z
   }
 }

@@ -21,6 +21,11 @@ impl Ramp {
     self.is_active = true;
   }
 
+  pub fn jump_to(&mut self, value: f32) {
+    self.x = value;
+    self.is_active = true;
+  }
+
   pub fn process(&mut self, freq: f32) -> f32 {
     let step_size = self.sample_period * freq;
 
