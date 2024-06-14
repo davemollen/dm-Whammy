@@ -1,5 +1,5 @@
 mod ramp;
-use super::VOICES;
+use super::{TARGET_FREQUENCY, VOICES};
 use crate::shared::{
   delay_line::{DelayLine, Interpolation},
   delta::Delta,
@@ -19,23 +19,15 @@ pub struct Grain {
 
 impl Grain {
   pub fn new(sample_rate: f32, index: usize) -> Self {
+    let phase_offset = (VOICES as f32).recip() * index as f32;
+
     Self {
-      freq: 0.,
-      window_size: 0.,
-      time_ramp: Ramp::new(sample_rate),
-      phase_offset: (VOICES as f32).recip() * index as f32,
+      freq: TARGET_FREQUENCY,
+      window_size: TARGET_FREQUENCY.recip() * 1000.,
+      time_ramp: Ramp::new(sample_rate, phase_offset),
+      phase_offset,
       delta: Delta::new(),
     }
-  }
-
-  pub fn reset(&mut self, freq: f32, speed: f32) {
-    self.freq = freq;
-    self.window_size = freq.recip() * 1000.;
-    self.time_ramp.jump_to(if speed >= 0. {
-      self.phase_offset
-    } else {
-      1. - self.phase_offset
-    });
   }
 
   pub fn process(
@@ -44,11 +36,7 @@ impl Grain {
     phasor: f32,
     freq: f32,
     speed: f32,
-    should_reset: bool,
   ) -> f32 {
-    if should_reset {
-      self.reset(freq, speed);
-    }
     let phase = Self::wrap(phasor + self.phase_offset);
     let trigger = self.delta.process(phase).abs() > 0.5;
     if trigger {

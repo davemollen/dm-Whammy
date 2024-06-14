@@ -7,22 +7,17 @@ pub struct Ramp {
 }
 
 impl Ramp {
-  pub fn new(sample_rate: f32) -> Self {
+  pub fn new(sample_rate: f32, initial_value: f32) -> Self {
     Self {
-      x: 0.,
+      x: initial_value,
       trigger: false,
-      is_active: false,
+      is_active: true,
       sample_period: sample_rate.recip(),
     }
   }
 
   pub fn start(&mut self) {
     self.trigger = true;
-    self.is_active = true;
-  }
-
-  pub fn jump_to(&mut self, value: f32) {
-    self.x = value;
     self.is_active = true;
   }
 
@@ -62,7 +57,7 @@ mod tests {
 
   #[test]
   fn forward_ramp() {
-    let mut ramp = Ramp::new(10.);
+    let mut ramp = Ramp::new(10., 0.);
     ramp.start();
     assert_approximately_eq(ramp.process(1.), 0.);
     assert_approximately_eq(ramp.process(1.), 0.1);
@@ -80,7 +75,7 @@ mod tests {
 
   #[test]
   fn backward_ramp() {
-    let mut ramp = Ramp::new(10.);
+    let mut ramp = Ramp::new(10., 0.);
     ramp.start();
     assert_approximately_eq(ramp.process(-1.), 1.);
     assert_approximately_eq(ramp.process(-1.), 0.9);
@@ -98,7 +93,7 @@ mod tests {
 
   #[test]
   fn bidirectional_ramp() {
-    let mut ramp = Ramp::new(10.);
+    let mut ramp = Ramp::new(10., 0.);
     ramp.start();
     assert_approximately_eq(ramp.process(-1.), 1.);
     assert_approximately_eq(ramp.process(-1.), 0.9);
