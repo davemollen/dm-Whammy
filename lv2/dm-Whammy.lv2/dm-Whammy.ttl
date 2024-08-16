@@ -18,8 +18,10 @@
 	mod:brand "DM" ;
 	mod:label "Whammy" ;
 	rdfs:comment """
-A pitchshift effect written in Rust.
-""" ;
+A mono pitchshift effect inspired by the classic DigiTech Whammy© (*).
+
+(*) 'DigiTech Whammy© is a trademark or trade name of another manufacturer and was used merely to identify the product whose sound was reviewed in the creation of this product. All other trademarks are the property of their respective holders.'
+""";
 	lv2:requiredFeature lv2:inPlaceBroken ;
 	lv2:optionalFeature lv2:hardRTCapable ;
 	lv2:port [
