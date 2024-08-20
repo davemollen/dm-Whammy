@@ -1,6 +1,6 @@
 ## dm-Whammy
 
-A mono pitchshift effect written in Rust inspired by the classic DigiTech Whammy©. 
+A mono pitchshift effect written in Rust inspired by the DigiTech Whammy©.
 
 The effect can be compiled to a [MOD audio](https://mod.audio/), VST3 or CLAP plugin.
 

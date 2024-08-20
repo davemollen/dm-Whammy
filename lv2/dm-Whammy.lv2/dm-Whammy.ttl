@@ -18,7 +18,7 @@
 	mod:brand "DM" ;
 	mod:label "Whammy" ;
 	rdfs:comment """
-A mono pitchshift effect inspired by the classic DigiTech Whammy© (*).
+A mono pitchshift effect inspired by the DigiTech Whammy© (*).
 
 (*) 'DigiTech Whammy© is a trademark or trade name of another manufacturer and was used merely to identify the product whose sound was reviewed in the creation of this product. All other trademarks are the property of their respective holders.'
 """;
