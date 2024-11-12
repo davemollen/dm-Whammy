@@ -3,7 +3,6 @@ pub mod shared {
   pub mod delay_line;
   pub mod delta;
   pub mod float_ext;
-  pub mod ramp_smooth;
 }
 mod grains;
 mod smooth_parameters;

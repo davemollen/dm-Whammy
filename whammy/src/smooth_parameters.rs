@@ -1,4 +1,5 @@
-use crate::shared::ramp_smooth::RampSmooth;
+mod ramp_smooth;
+use ramp_smooth::RampSmooth;
 
 pub struct SmoothParameters {
   smooth_speed: RampSmooth,

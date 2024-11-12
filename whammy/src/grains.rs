@@ -1,6 +1,6 @@
 mod grain;
 mod phasor;
-use {crate::shared::ramp_smooth::RampSmooth, grain::Grain, phasor::Phasor};
+use {grain::Grain, phasor::Phasor};
 
 use crate::shared::delay_line::DelayLine;
 
