@@ -1,6 +1,6 @@
 use nih_plug::prelude::*;
 use std::sync::Arc;
-use whammy::Whammy;
+use whammy::{Params as ProcessParams, Whammy};
 mod whammy_parameters;
 use whammy_parameters::WhammyParameters;
 mod editor;
@@ -8,6 +8,7 @@ mod editor;
 struct DmWhammy {
   params: Arc<WhammyParameters>,
   whammy: Whammy,
+  process_params: ProcessParams,
 }
 
 impl Default for DmWhammy {
@@ -16,6 +17,7 @@ impl Default for DmWhammy {
     Self {
       params: params.clone(),
       whammy: Whammy::new(44100.),
+      process_params: ProcessParams::new(44100.),
     }
   }
 }
@@ -56,12 +58,7 @@ impl Plugin for DmWhammy {
     _context: &mut impl InitContext<Self>,
   ) -> bool {
     self.whammy = Whammy::new(buffer_config.sample_rate);
-    let params = self.whammy.get_params(
-      self.params.pitch.value(),
-      self.params.dry.value(),
-      self.params.wet.value(),
-    );
-    self.whammy.initialize_params(params);
+    self.process_params = ProcessParams::new(buffer_config.sample_rate);
     true
   }
 
@@ -71,7 +68,7 @@ impl Plugin for DmWhammy {
     _aux: &mut AuxiliaryBuffers,
     _context: &mut impl ProcessContext<Self>,
   ) -> ProcessStatus {
-    let (speed, dry_level, wet_level) = self.whammy.get_params(
+    self.process_params.set(
       self.params.pitch.value(),
       self.params.dry.value(),
       self.params.wet.value(),
@@ -79,8 +76,7 @@ impl Plugin for DmWhammy {
 
     buffer.iter_samples().for_each(|mut channel_samples| {
       let sample = channel_samples.iter_mut().next().unwrap();
-      let whammy_output = self.whammy.process(*sample, speed, dry_level, wet_level);
-      *sample = whammy_output;
+      *sample = self.whammy.process(*sample, &mut self.process_params);
     });
     ProcessStatus::Normal
   }

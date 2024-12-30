@@ -1,7 +1,7 @@
 extern crate lv2;
 extern crate whammy;
 use lv2::prelude::*;
-use whammy::Whammy;
+use whammy::{Params, Whammy};
 
 #[derive(PortCollection)]
 struct Ports {
@@ -15,7 +15,7 @@ struct Ports {
 #[uri("https://github.com/davemollen/dm-Whammy")]
 struct DmWhammy {
   whammy: Whammy,
-  is_active: bool,
+  params: Params,
 }
 
 impl Plugin for DmWhammy {
@@ -27,26 +27,22 @@ impl Plugin for DmWhammy {
   type AudioFeatures = ();
 
   // Create a new instance of the plugin; Trivial in this case.
-  fn new(_plugin_info: &PluginInfo, _features: &mut ()) -> Option<Self> {
+  fn new(plugin_info: &PluginInfo, _features: &mut ()) -> Option<Self> {
+    let sample_rate = plugin_info.sample_rate() as f32;
+
     Some(Self {
-      whammy: Whammy::new(_plugin_info.sample_rate() as f32),
-      is_active: false,
+      whammy: Whammy::new(sample_rate),
+      params: Params::new(sample_rate),
     })
   }
 
   // Process a chunk of audio. The audio ports are dereferenced to slices, which the plugin
   // iterates over.
   fn run(&mut self, ports: &mut Ports, _features: &mut (), _sample_count: u32) {
-    let params = self.whammy.get_params(*ports.pitch, *ports.dry, *ports.wet);
-    let (speed, dry_level, wet_level) = params;
-
-    if !self.is_active {
-      self.whammy.initialize_params(params);
-      self.is_active = true;
-    }
+    self.params.set(*ports.pitch, *ports.dry, *ports.wet);
 
     for (input, output) in ports.input.iter().zip(ports.output.iter_mut()) {
-      *output = self.whammy.process(*input, speed, dry_level, wet_level);
+      *output = self.whammy.process(*input, &mut self.params);
     }
   }
 }

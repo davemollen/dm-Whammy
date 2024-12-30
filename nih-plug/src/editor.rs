@@ -6,7 +6,11 @@ use crate::whammy_parameters::WhammyParameters;
 use nih_plug::params::Param;
 use nih_plug::prelude::Editor;
 use nih_plug_vizia::vizia::{
-  model::Model, modifiers::{LayoutModifiers, StyleModifiers, TextModifiers}, prelude::Units::{Pixels, Stretch}, style::FontWeightKeyword, views::{HStack, Label, VStack}
+  model::Model,
+  modifiers::{LayoutModifiers, StyleModifiers, TextModifiers},
+  prelude::Units::{Pixels, Stretch},
+  style::FontWeightKeyword,
+  views::{HStack, Label, VStack},
 };
 use nih_plug_vizia::{create_vizia_editor, ViziaState, ViziaTheming};
 use std::sync::Arc;
@@ -45,7 +49,7 @@ pub(crate) fn create(
             |params| &params.dry,
             |param_ptr, val| ParamChangeEvent::SetParam(param_ptr, val),
             ParamKnobSize::Regular,
-          ); 
+          );
           ParamKnob::new(
             cx,
             params.wet.name(),
@@ -63,7 +67,8 @@ pub(crate) fn create(
             |params| &params.pitch,
             |param_ptr, val| ParamChangeEvent::SetParam(param_ptr, val),
             ParamKnobSize::Large,
-          ).space(Stretch(1.));
+          )
+          .space(Stretch(1.));
         })
         .child_space(Stretch(1.0));
 
