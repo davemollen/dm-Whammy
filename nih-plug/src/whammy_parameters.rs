@@ -1,9 +1,10 @@
-use nih_plug::prelude::{FloatParam, FloatRange, Params};
+use nih_plug::{
+  formatters::v2s_f32_rounded,
+  prelude::{FloatParam, FloatRange, Params},
+};
 use nih_plug_vizia::ViziaState;
 use std::sync::Arc;
 use whammy::{MAX_PITCH, MIN_PITCH};
-mod custom_formatters;
-use custom_formatters::v2s_f32_digits;
 
 use crate::editor;
 
@@ -32,11 +33,10 @@ impl Default for WhammyParameters {
       dry: FloatParam::new(
         "Dry",
         -70.,
-        FloatRange::SymmetricalSkewed {
+        FloatRange::Skewed {
           min: -70.,
           max: 6.,
-          factor: 0.333333,
-          center: 0.,
+          factor: 2.,
         },
       )
       .with_unit(" dB")
@@ -51,11 +51,10 @@ impl Default for WhammyParameters {
       wet: FloatParam::new(
         "Wet",
         0.,
-        FloatRange::SymmetricalSkewed {
+        FloatRange::Skewed {
           min: -70.,
           max: 6.,
-          factor: 0.333333,
-          center: 0.,
+          factor: 2.,
         },
       )
       .with_unit(" dB")
@@ -75,7 +74,7 @@ impl Default for WhammyParameters {
           max: MAX_PITCH,
         },
       )
-      .with_value_to_string(v2s_f32_digits(2)),
+      .with_value_to_string(v2s_f32_rounded(2)),
     }
   }
 }
