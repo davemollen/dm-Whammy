@@ -30,13 +30,7 @@ impl Grain {
     }
   }
 
-  pub fn process(
-    &mut self,
-    grain_delay_line: &mut DelayLine,
-    phasor: f32,
-    freq: f32,
-    speed: f32,
-  ) -> f32 {
+  pub fn process(&mut self, delay_line: &DelayLine, phasor: f32, freq: f32, speed: f32) -> f32 {
     let phase = Self::wrap(phasor + self.phase_offset);
     let trigger = self.delta.process(phase).abs() > 0.5;
     if trigger {
@@ -48,7 +42,7 @@ impl Grain {
     let ramp = self.time_ramp.process(self.freq * speed);
     let time = ramp * self.window_size;
     let window = (ramp * PI).fast_sin() * (phase * PI).fast_sin();
-    grain_delay_line.read(time, Interpolation::Spline) * window
+    delay_line.read(time, Interpolation::Spline) * window
   }
 
   fn wrap(input: f32) -> f32 {
