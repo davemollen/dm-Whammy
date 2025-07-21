@@ -1,2 +1,6 @@
 target
 .DS_Store
+*.svg
+*libdm_whammy.so
+*libdm_whammy.dylib
+*libdm_whammy.dll
