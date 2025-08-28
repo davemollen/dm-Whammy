@@ -23,7 +23,7 @@ impl Default for DmWhammy {
 }
 
 impl Plugin for DmWhammy {
-  const NAME: &'static str = "dm-Whammy";
+  const NAME: &'static str = "Whammy";
   const VENDOR: &'static str = "DM";
   const URL: &'static str = "https://github.com/davemollen/dm-Whammy";
   const EMAIL: &'static str = "davemollen@gmail.com";
