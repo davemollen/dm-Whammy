@@ -29,11 +29,18 @@ impl Plugin for DmWhammy {
   const EMAIL: &'static str = "davemollen@gmail.com";
   const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
-  const AUDIO_IO_LAYOUTS: &'static [AudioIOLayout] = &[AudioIOLayout {
-    main_input_channels: NonZeroU32::new(1),
-    main_output_channels: NonZeroU32::new(1),
-    ..AudioIOLayout::const_default()
-  }];
+  const AUDIO_IO_LAYOUTS: &'static [AudioIOLayout] = &[
+    AudioIOLayout {
+      main_input_channels: NonZeroU32::new(2),
+      main_output_channels: NonZeroU32::new(2),
+      ..AudioIOLayout::const_default()
+    },
+    AudioIOLayout {
+      main_input_channels: NonZeroU32::new(1),
+      main_output_channels: NonZeroU32::new(1),
+      ..AudioIOLayout::const_default()
+    },
+  ];
   const MIDI_INPUT: MidiConfig = MidiConfig::None;
   const SAMPLE_ACCURATE_AUTOMATION: bool = true;
 
@@ -75,8 +82,20 @@ impl Plugin for DmWhammy {
     );
 
     buffer.iter_samples().for_each(|mut channel_samples| {
-      let sample = channel_samples.iter_mut().next().unwrap();
-      *sample = self.whammy.process(*sample, &mut self.process_params);
+      if channel_samples.len() == 2 {
+        let channel_iterator = &mut channel_samples.iter_mut();
+        let left_channel = channel_iterator.next().unwrap();
+        let right_channel = channel_iterator.next().unwrap();
+        let whammy_out = self.whammy.process(
+          (*left_channel + *right_channel) * 0.5,
+          &mut self.process_params,
+        );
+        *left_channel = whammy_out;
+        *right_channel = whammy_out;
+      } else {
+        let sample = channel_samples.iter_mut().next().unwrap();
+        *sample = self.whammy.process(*sample, &mut self.process_params);
+      };
     });
     ProcessStatus::Normal
   }
@@ -94,7 +113,6 @@ impl ClapPlugin for DmWhammy {
   const CLAP_FEATURES: &'static [ClapFeature] = &[
     ClapFeature::AudioEffect,
     ClapFeature::Mono,
-    ClapFeature::Utility,
     ClapFeature::PitchShifter,
   ];
 }
