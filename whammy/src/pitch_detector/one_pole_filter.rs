@@ -13,6 +13,10 @@ impl OnePoleFilter {
     }
   }
 
+  pub fn reset(&mut self) {
+    self.z = 0.;
+  }
+
   pub fn process(&mut self, input: f32) -> f32 {
     let a0 = 1.0 - self.b1;
     self.z = input * a0 + self.z * self.b1;

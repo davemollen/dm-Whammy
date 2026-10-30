@@ -27,6 +27,14 @@ impl Grains {
     }
   }
 
+  pub fn reset(&mut self) {
+    self.delay_line.reset();
+    for grains in self.grains.iter_mut() {
+      grains.reset();
+    }
+    self.phasor.reset();
+  }
+
   pub fn process(&mut self, input: f32, speed: f32, detected_freq: f32) -> f32 {
     let grain_freq = Self::get_grain_freq(detected_freq);
     let phasor = self.phasor.process(grain_freq * speed);

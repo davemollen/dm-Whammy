@@ -16,6 +16,12 @@ impl Ramp {
     }
   }
 
+  pub fn reset(&mut self, initial_value: f32) {
+    self.x = initial_value;
+    self.trigger = false;
+    self.is_active = true;
+  }
+
   pub fn start(&mut self) {
     self.trigger = true;
     self.is_active = true;
@@ -50,59 +56,58 @@ impl Ramp {
 #[cfg(test)]
 mod tests {
   use super::Ramp;
-
-  fn assert_approximately_eq(left: f32, right: f32) {
-    assert_eq!((left * 10.).round() / 10., (right * 10.).round() / 10.)
-  }
+  use crate::assert_approximately_eq;
 
   #[test]
   fn forward_ramp() {
     let mut ramp = Ramp::new(10., 0.);
     ramp.start();
-    assert_approximately_eq(ramp.process(1.), 0.);
-    assert_approximately_eq(ramp.process(1.), 0.1);
-    assert_approximately_eq(ramp.process(1.), 0.2);
-    assert_approximately_eq(ramp.process(1.), 0.3);
-    assert_approximately_eq(ramp.process(1.), 0.4);
-    assert_approximately_eq(ramp.process(1.), 0.5);
-    assert_approximately_eq(ramp.process(1.), 0.6);
-    assert_approximately_eq(ramp.process(1.), 0.7);
-    assert_approximately_eq(ramp.process(1.), 0.8);
-    assert_approximately_eq(ramp.process(1.), 0.9);
-    assert_approximately_eq(ramp.process(1.), 1.);
-    assert_approximately_eq(ramp.process(1.), 1.);
+    assert_approximately_eq!(ramp.process(1.), 0., 2);
+    assert_approximately_eq!(ramp.process(1.), 0.1, 2);
+    assert_approximately_eq!(ramp.process(1.), 0.2, 2);
+    assert_approximately_eq!(ramp.process(1.), 0.3, 2);
+    assert_approximately_eq!(ramp.process(1.), 0.4, 2);
+    assert_approximately_eq!(ramp.process(1.), 0.5, 2);
+    assert_approximately_eq!(ramp.process(1.), 0.6, 2);
+    assert_approximately_eq!(ramp.process(1.), 0.7, 2);
+    assert_approximately_eq!(ramp.process(1.), 0.8, 2);
+    assert_approximately_eq!(ramp.process(1.), 0.9, 2);
+    assert_approximately_eq!(ramp.process(1.), 1., 2);
+    assert_approximately_eq!(ramp.process(1.), 1., 2);
   }
 
   #[test]
   fn backward_ramp() {
     let mut ramp = Ramp::new(10., 0.);
     ramp.start();
-    assert_approximately_eq(ramp.process(-1.), 1.);
-    assert_approximately_eq(ramp.process(-1.), 0.9);
-    assert_approximately_eq(ramp.process(-1.), 0.8);
-    assert_approximately_eq(ramp.process(-1.), 0.7);
-    assert_approximately_eq(ramp.process(-1.), 0.6);
-    assert_approximately_eq(ramp.process(-1.), 0.5);
-    assert_approximately_eq(ramp.process(-1.), 0.4);
-    assert_approximately_eq(ramp.process(-1.), 0.3);
-    assert_approximately_eq(ramp.process(-1.), 0.2);
-    assert_approximately_eq(ramp.process(-1.), 0.1);
-    assert_approximately_eq(ramp.process(-1.), 0.);
-    assert_approximately_eq(ramp.process(-1.), 0.);
+    assert_approximately_eq!(ramp.process(-1.), 1., 2);
+    assert_approximately_eq!(ramp.process(-1.), 0.9, 2);
+    assert_approximately_eq!(ramp.process(-1.), 0.8, 2);
+    assert_approximately_eq!(ramp.process(-1.), 0.7, 2);
+    assert_approximately_eq!(ramp.process(-1.), 0.6, 2);
+    assert_approximately_eq!(ramp.process(-1.), 0.5, 2);
+    assert_approximately_eq!(ramp.process(-1.), 0.4, 2);
+    assert_approximately_eq!(ramp.process(-1.), 0.3, 2);
+    assert_approximately_eq!(ramp.process(-1.), 0.2, 2);
+    assert_approximately_eq!(ramp.process(-1.), 0.1, 2);
+    assert_approximately_eq!(ramp.process(-1.), 0., 2);
+    assert_approximately_eq!(ramp.process(-1.), 0., 2);
   }
 
   #[test]
   fn bidirectional_ramp() {
     let mut ramp = Ramp::new(10., 0.);
     ramp.start();
-    assert_approximately_eq(ramp.process(-1.), 1.);
-    assert_approximately_eq(ramp.process(-1.), 0.9);
-    assert_approximately_eq(ramp.process(-1.), 0.8);
-    assert_approximately_eq(ramp.process(1.), 0.9);
-    assert_approximately_eq(ramp.process(1.), 1.);
-    assert_approximately_eq(ramp.process(1.), 1.);
-    assert_approximately_eq(ramp.process(-1.), 0.9);
+    assert_approximately_eq!(ramp.process(-1.), 1., 2);
+    assert_approximately_eq!(ramp.process(-1.), 0.9, 2);
+    assert_approximately_eq!(ramp.process(-1.), 0.8, 2);
+    assert_approximately_eq!(ramp.process(-1.), 0.7, 2);
+    assert_approximately_eq!(ramp.process(1.), 0.8, 2);
+    assert_approximately_eq!(ramp.process(1.), 0.9, 2);
+    assert_approximately_eq!(ramp.process(1.), 1., 2);
+    assert_approximately_eq!(ramp.process(1.), 1., 2);
     ramp.start();
-    assert_approximately_eq(ramp.process(1.), 0.);
+    assert_approximately_eq!(ramp.process(-1.), 1., 2);
+    assert_approximately_eq!(ramp.process(-1.), 0.9, 2);
   }
 }

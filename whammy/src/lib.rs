@@ -3,6 +3,7 @@ pub mod shared {
   pub mod delay_line;
   pub mod delta;
   pub mod float_ext;
+  pub mod macros;
 }
 mod grains;
 mod params;
@@ -23,6 +24,11 @@ impl Whammy {
       pitch_detector: PitchDetector::new(sample_rate),
       grains: Grains::new(sample_rate),
     }
+  }
+
+  pub fn reset(&mut self) {
+    self.pitch_detector.reset();
+    self.grains.reset();
   }
 
   pub fn process(&mut self, input: f32, params: &mut Params) -> f32 {

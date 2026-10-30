@@ -20,10 +20,17 @@ impl PitchDetector {
     Self {
       sample_rate,
       filter: OnePoleFilter::new(sample_rate, 20.),
-      delta: Delta::new(),
+      delta: Delta::new(0.),
       counter: 0.,
       frequency: 0.,
     }
+  }
+
+  pub fn reset(&mut self) {
+    self.filter.reset();
+    self.delta.reset(0.);
+    self.counter = 0.;
+    self.frequency = 0.;
   }
 
   pub fn get_frequency(&mut self, input: f32) -> f32 {

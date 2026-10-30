@@ -69,6 +69,11 @@ impl Plugin for DmWhammy {
     true
   }
 
+  fn reset(&mut self) {
+    self.whammy.reset();
+    self.process_params.reset();
+  }
+
   fn process(
     &mut self,
     buffer: &mut Buffer,

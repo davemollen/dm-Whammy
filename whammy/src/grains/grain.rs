@@ -26,8 +26,13 @@ impl Grain {
       window_size: TARGET_FREQUENCY.recip() * 1000.,
       time_ramp: Ramp::new(sample_rate, phase_offset),
       phase_offset,
-      delta: Delta::new(),
+      delta: Delta::new(phase_offset),
     }
+  }
+
+  pub fn reset(&mut self) {
+    self.time_ramp.reset(self.phase_offset);
+    self.delta.reset(self.phase_offset);
   }
 
   pub fn process(&mut self, delay_line: &DelayLine, phasor: f32, freq: f32, speed: f32) -> f32 {

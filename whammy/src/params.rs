@@ -19,6 +19,10 @@ impl Params {
     }
   }
 
+  pub fn reset(&mut self) {
+    self.is_initialized = false;
+  }
+
   pub fn set(&mut self, pitch: f32, dry: f32, wet: f32) {
     let speed = 1. - 2_f32.powf(pitch / 12.);
     let dry = Self::dbtoa(dry);
