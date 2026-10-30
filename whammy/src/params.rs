@@ -1,6 +1,8 @@
 mod smooth;
-use smooth::LinearSmooth;
-pub use {crate::shared::float_ext::FloatExt, smooth::Smoother};
+pub use {
+  crate::shared::float_ext::FloatExt,
+  smooth::{LinearSmooth, Smoother},
+};
 
 pub struct Params {
   pub speed: LinearSmooth,

@@ -1,7 +1,7 @@
 extern crate lv2;
 extern crate whammy;
 use lv2::prelude::*;
-use whammy::{Params, Whammy};
+use whammy::{Bypass, Params, Whammy};
 
 #[derive(PortCollection)]
 struct Ports {
@@ -10,12 +10,14 @@ struct Ports {
   pitch: InputPort<InPlaceControl>,
   input: InputPort<InPlaceAudio>,
   output: OutputPort<InPlaceAudio>,
+  enabled: InputPort<InPlaceControl>,
 }
 
 #[uri("https://github.com/davemollen/dm-Whammy")]
 struct DmWhammy {
   whammy: Whammy,
   params: Params,
+  bypass: Bypass,
 }
 
 impl Plugin for DmWhammy {
@@ -33,6 +35,7 @@ impl Plugin for DmWhammy {
     Some(Self {
       whammy: Whammy::new(sample_rate),
       params: Params::new(sample_rate),
+      bypass: Bypass::new(sample_rate),
     })
   }
 
@@ -40,17 +43,30 @@ impl Plugin for DmWhammy {
   fn activate(&mut self, _features: &mut Self::InitFeatures) {
     self.whammy.reset();
     self.params.reset();
+    self.bypass.reset();
   }
 
   // Process a chunk of audio. The audio ports are dereferenced to slices, which the plugin
   // iterates over.
-  fn run(&mut self, ports: &mut Ports, _features: &mut (), _sample_count: u32) {
+  fn run(&mut self, ports: &mut Ports, _features: &mut (), sample_count: u32) {
+    self.bypass.set_enabled(ports.enabled.get() == 0., || {
+      self.whammy.reset();
+      self.params.reset();
+    });
+
+    if self.bypass.is_done_activating() {
+      ports.output.copy_from(&ports.input, sample_count);
+      return;
+    }
+
     self
       .params
       .set(ports.pitch.get(), ports.dry.get(), ports.wet.get());
 
     for (input, output) in ports.input.iter().zip(ports.output.iter()) {
-      let whammy_output = self.whammy.process(input.get(), &mut self.params);
+      let dry = input.get();
+      let wet = self.whammy.process(dry, &mut self.params);
+      let whammy_output = self.bypass.process(dry, wet);
       output.set(whammy_output);
     }
   }

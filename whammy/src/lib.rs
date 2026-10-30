@@ -1,3 +1,4 @@
+mod bypass;
 mod pitch_detector;
 pub mod shared {
   pub mod delay_line;
@@ -7,7 +8,7 @@ pub mod shared {
 }
 mod grains;
 mod params;
-pub use params::Params;
+pub use {bypass::Bypass, params::Params};
 use {grains::Grains, params::Smoother, pitch_detector::PitchDetector};
 
 pub const MIN_PITCH: f32 = -24.;
